@@ -115,7 +115,12 @@ writeFileSync(join(tempDir, 'cordis.patch.yml'), [
 ].join('\n'))
 const nm = join(tempDir, 'node_modules')
 mkdirSync(join(nm, 'dsh-plugin-hello'), { recursive: true })
-writeFileSync(join(nm, 'dsh-plugin-hello', 'package.json'), JSON.stringify({ name: 'dsh-plugin-hello', version: '0.1.0', description: 'demo' }))
+writeFileSync(join(nm, 'dsh-plugin-hello', 'package.json'), JSON.stringify({
+  name: 'dsh-plugin-hello',
+  version: '0.1.0',
+  description: 'demo',
+  repository: { type: 'git', url: 'git+https://github.com/runcat-tommy/dsh-plugin-hello.git' },
+}))
 mkdirSync(join(nm, 'dsh-plugins-market'), { recursive: true })
 writeFileSync(join(nm, 'dsh-plugins-market', 'package.json'), JSON.stringify({ name: 'dsh-plugins-market', version: '0.1.0', description: 'market' }))
 mkdirSync(join(nm, '@deepseek-ai', 'dsh-web-search-deepseek'), { recursive: true })
@@ -156,8 +161,9 @@ test('GET /inventory: fields, sources, skip group/include', async () => {
   assert.equal(byId['hello'].fiberPhase, 'active')
   assert.equal(byId['hello'].description, 'demo')
   assert.equal(byId['hello'].version, '0.1.0')
-  assert.equal(byId['hello'].sourceKind, 'link')
-  assert.equal(byId['hello'].sourceSpec, 'C:/some/hello')
+  // 有 repository 字段 → 显示清理后的仓库 URL（git+ 前缀和 .git 后缀被去掉）
+  assert.equal(byId['hello'].sourceKind, 'repo')
+  assert.equal(byId['hello'].sourceSpec, 'https://github.com/runcat-tommy/dsh-plugin-hello')
   assert.deepEqual(byId['hello'].config, { greeting: 'hi' })
 
   assert.equal(byId['market'].fiberPhase, 'failed')

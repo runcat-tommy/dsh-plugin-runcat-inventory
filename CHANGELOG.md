@@ -2,6 +2,26 @@
 
 本文件记录 `dsh-plugin-runcat-inventory`（逃咪-插件总览 / Runcat Plugin Overview）的版本变更。
 
+## [0.3.1] - 2026-08-27
+
+### 变更
+
+- **列宽改为固定比例**（`table-layout: fixed` + `<colgroup>`）：
+  名称 36% / 状态 15% / 来源 21% / 操作 28%（名称最重要、占比最大）；
+  状态、操作列设最小宽度保护徽章与按钮不挤压。
+- **来源列优先显示仓库地址**：host 读取各包 `package.json` 的
+  `repository` 字段（自动清理 `git+` 前缀与 `.git` 后缀），有仓库即显示
+  仓库 URL；无仓库才回退到安装方式（link/file/github/npm/builtin）。
+- 本插件 `package.json` 补充 `repository` 字段 →
+  `https://github.com/runcat-tommy/dsh-plugin-runcat-inventory`。
+
+### 测试
+
+- mock 测试更新：`dsh-plugin-hello` 假包加 `repository`，断言
+  `sourceKind='repo'` 与 URL 清理结果；其余用例不变。5 用例全部通过。
+
+---
+
 ## [0.3.0] - 2026-08-27
 
 ### 国际化（界面语言随 DSH 环境自动切换）
