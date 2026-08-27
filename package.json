@@ -1,7 +1,7 @@
 {
   "name": "dsh-plugin-runcat-inventory",
-  "version": "0.2.0",
-  "description": "逃猫-插件总览：更好用的 DSH 插件列表 —— 表格视图、状态过滤、启用/停用开关（热生效）、配置查看与复制。",
+  "version": "0.2.1",
+  "description": "逃咪-插件总览：更好用的 DSH 插件列表 —— 表格视图、状态过滤、启用/停用开关（热生效）、配置查看与复制。",
   "type": "module",
   "main": "lib/index.js",
   "exports": {
@@ -34,7 +34,7 @@
     "plugin",
     "inventory",
     "runcat",
-    "逃猫"
+    "逃咪"
   ],
   "license": "MIT"
 }

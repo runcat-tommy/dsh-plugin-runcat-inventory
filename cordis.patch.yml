@@ -1,5 +1,5 @@
 # dsh-plugin-runcat-inventory bundle patch: contributes one profile row.
-# 在设置 → 插件 下新增“逃猫-插件总览”选项卡（与官方“插件列表”并存）。
+# 在设置 → 插件 下新增“逃咪-插件总览”选项卡（与官方“插件列表”并存）。
 - insert:
     - id: runcat-inventory
       name: 'dsh-plugin-runcat-inventory'

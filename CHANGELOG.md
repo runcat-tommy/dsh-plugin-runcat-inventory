@@ -1,6 +1,15 @@
 # 更新记录 (Changelog)
 
-本文件记录 `dsh-plugin-runcat-inventory`（逃猫-插件总览）的版本变更。
+本文件记录 `dsh-plugin-runcat-inventory`（逃咪-插件总览）的版本变更。
+
+## [0.2.1] - 2026-08-27
+
+### 变更
+
+- 插件中文名由"**逃猫**-插件总览"改为"**逃咪**-插件总览"（选项卡显示名、
+  package.json 描述与关键词、README/CHANGELOG/代码注释同步更新）。
+
+---
 
 ## [0.2.0] - 2026-08-27
 

@@ -1,9 +1,9 @@
-# dsh-plugin-runcat-inventory（逃猫-插件总览）
+# dsh-plugin-runcat-inventory（逃咪-插件总览）
 
-> 版本：**v0.2.0** · 更新记录见 [CHANGELOG.md](CHANGELOG.md)
+> 版本：**v0.2.1** · 更新记录见 [CHANGELOG.md](CHANGELOG.md)
 
 一个更好用的 DSH 插件列表：**表格视图、状态过滤、启用/停用开关（热生效）、配置查看与复制**。
-与官方"插件列表"并存，注册在 设置 → 插件 → 逃猫-插件总览。
+与官方"插件列表"并存，注册在 设置 → 插件 → 逃咪-插件总览。
 
 ## 功能
 
@@ -42,7 +42,7 @@ dsh plugin --profile web add .
 ```
 
 验证：`dsh --profile web --dump-config` 末尾应出现 `runcat-inventory` 条目。
-然后**重启 Web UI**，进入 设置 → 插件 → 逃猫-插件总览。
+然后**重启 Web UI**，进入 设置 → 插件 → 逃咪-插件总览。
 
 ## 工作原理
 
@@ -75,6 +75,7 @@ dsh plugin --profile web remove dsh-plugin-runcat-inventory
 
 完整变更历史见 [CHANGELOG.md](CHANGELOG.md)。
 
+- **v0.2.1**（2026-08-27）：插件中文名由"逃猫-插件总览"改为"逃咪-插件总览"。
 - **v0.2.0**（2026-08-27）：表格改为固定 4 列并移除粘性列；"详情"按钮
   按"有描述或有配置"显示；新增名称排序、键盘 ←/→ 横向滚动、窄屏隐藏
   "来源"列；修复两处跨平台 bug；新增 mock 单元测试。
