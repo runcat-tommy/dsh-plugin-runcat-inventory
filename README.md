@@ -1,6 +1,6 @@
 # dsh-plugin-runcat-inventory（逃咪-插件总览）
 
-> 版本：**v0.3.3** · 更新记录见 [CHANGELOG.md](CHANGELOG.md)
+> 版本：**v0.3.4** · 更新记录见 [CHANGELOG.md](CHANGELOG.md)
 
 一个更好用的 DSH 插件列表：**表格视图、状态过滤、启用/停用开关（热生效）、配置查看与复制、中英文界面自动切换**。
 与官方"插件列表"并存，注册在 设置 → 插件 → 逃咪-插件总览（英文环境显示 Runcat Plugin Overview）。
@@ -23,7 +23,7 @@
 ## 结构
 
 ```
-runcat-inventory/
+dsh-plugin-runcat-inventory/   # git clone 后的本地文件夹名（与仓库同名）
 ├── package.json      # dsh.bundle.patch + dsh.client 声明
 ├── cordis.patch.yml  # 补丁层：把本插件条目 insert 进根 entry 列表
 ├── lib/
@@ -35,15 +35,41 @@ runcat-inventory/
 └── README.md
 ```
 
+## 前置条件
+
+| 依赖 | 必需？ | 说明 |
+|---|---|---|
+| **Node.js** | ✅ 必需 | DSH 本身是 Node 程序，必须安装 Node.js（建议 20+ 或最新 LTS，无严格版本下限要求） |
+| **DSH CLI** | ✅ 必需 | `npm i -g @deepseek-ai/dsh` |
+| **pnpm** | ✅ 必需 | `dsh plugin` 命令是 pnpm 的转发器，未安装会报 `pnpm not found on PATH`；`npm i -g pnpm` |
+| **Git** | ⚠️ 视安装方式 | 从 GitHub 克隆仓库、或直接 `dsh plugin add github:runcat-tommy/dsh-plugin-runcat-inventory` 时需要；仅用本地文件夹安装则不需要 |
+| **网络** | ⚠️ 视环境 | 需要能访问 GitHub；直连不通时可为 git 配置代理，如 `git config --global http.https://github.com.proxy http://127.0.0.1:7897` |
+
+> 本插件自身**零依赖**：host 半端只用 Node 内置模块（外加惰性解析 profile
+> 里的 js-yaml），浏览器半端手写 ModuleLoader bundle，无需额外安装任何包。
+
 ## 安装
 
 ```sh
-cd runcat-inventory
+# 1) 克隆仓库（本地文件夹名即 dsh-plugin-runcat-inventory）
+git clone https://github.com/runcat-tommy/dsh-plugin-runcat-inventory.git
+cd dsh-plugin-runcat-inventory
+
+# 2) 安装到 web profile（自动加入 dsh.profile.bundles）
 dsh plugin --profile web add .
 ```
 
-验证：`dsh --profile web --dump-config` 末尾应出现 `runcat-inventory` 条目。
-然后**重启 Web UI**，进入 设置 → 插件 → 逃咪-插件总览。
+> 说明：
+> - `dsh plugin add .` 会把本目录以 `link:` 方式装进 profile（本地开发
+>   友好：改代码重启即生效，无需重复安装）。
+> - 也可直接用 GitHub 源安装：
+>   `dsh plugin --profile web add github:runcat-tommy/dsh-plugin-runcat-inventory`
+>   （本插件无构建脚本，无需配置 allowBuilds）。
+
+验证：`dsh --profile web --dump-config` 末尾应出现条目——**id 为
+`runcat-inventory`、name 为 `dsh-plugin-runcat-inventory`**。
+然后**重启 Web UI**，进入 设置 → 插件 → 逃咪-插件总览（英文环境显示
+Runcat Plugin Overview）。
 
 ## 工作原理
 
@@ -76,6 +102,9 @@ dsh plugin --profile web remove dsh-plugin-runcat-inventory
 
 完整变更历史见 [CHANGELOG.md](CHANGELOG.md)。
 
+- **v0.3.4**（2026-08-27）：文档更新——使用说明的文件夹名统一为
+  `dsh-plugin-runcat-inventory`（与 GitHub 仓库名一致）；新增"前置条件"
+  章节（Node.js / DSH / pnpm / Git / 网络）。
 - **v0.3.3**（2026-08-27）：本插件自身的描述随界面语言切换——中文环境
   显示中文描述，英文环境显示英文描述（"详情"展开行的 Description 内容）。
 - **v0.3.2**（2026-08-27）：修复——仅本插件显示仓库地址，其余插件恢复按

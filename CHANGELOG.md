@@ -2,6 +2,22 @@
 
 本文件记录 `dsh-plugin-runcat-inventory`（逃咪-插件总览 / Runcat Plugin Overview）的版本变更。
 
+## [0.3.4] - 2026-08-27
+
+### 文档
+
+- **文件夹名统一**：使用说明中的目录名由 `runcat-inventory` 改为
+  `dsh-plugin-runcat-inventory`（与 GitHub 仓库
+  `https://github.com/runcat-tommy/dsh-plugin-runcat-inventory` 克隆后的
+  本地文件夹名一致）；结构树、安装步骤同步更新。
+- **新增"前置条件"章节**：明确 Node.js（DSH 为 Node 程序，必需）、
+  pnpm（`dsh plugin` 为 pnpm 转发器，必需）、Git（克隆/GitHub 源安装时
+  需要）、网络（访问 GitHub，必要时配置代理）；并说明本插件自身零依赖。
+- 验证段落澄清 loader 条目：id 为 `runcat-inventory`、name 为
+  `dsh-plugin-runcat-inventory`，避免与文件夹名混淆。
+
+---
+
 ## [0.3.3] - 2026-08-27
 
 ### 变更
