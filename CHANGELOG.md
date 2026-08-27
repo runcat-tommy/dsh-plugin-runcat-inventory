@@ -2,6 +2,17 @@
 
 本文件记录 `dsh-plugin-runcat-inventory`（逃咪-插件总览 / Runcat Plugin Overview）的版本变更。
 
+## [0.3.3] - 2026-08-27
+
+### 变更
+
+- **本插件自身的描述随界面语言切换**：zh/en 字典新增 `selfDescription`
+  键（中文/英文各一套），"详情"展开行的 Description 内容对本插件按当前
+  语言显示；其余插件仍显示其 package.json 的 `description` 原文（作者
+  单一语言，无法通用翻译）。
+
+---
+
 ## [0.3.2] - 2026-08-27
 
 ### 修复

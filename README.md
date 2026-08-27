@@ -1,6 +1,6 @@
 # dsh-plugin-runcat-inventory（逃咪-插件总览）
 
-> 版本：**v0.3.2** · 更新记录见 [CHANGELOG.md](CHANGELOG.md)
+> 版本：**v0.3.3** · 更新记录见 [CHANGELOG.md](CHANGELOG.md)
 
 一个更好用的 DSH 插件列表：**表格视图、状态过滤、启用/停用开关（热生效）、配置查看与复制、中英文界面自动切换**。
 与官方"插件列表"并存，注册在 设置 → 插件 → 逃咪-插件总览（英文环境显示 Runcat Plugin Overview）。
@@ -10,7 +10,7 @@
 | 能力 | 说明 |
 |---|---|
 | 表格视图 | 4 列固定比例：名称 36% / 状态 15% / 来源 21% / 操作 28%（名称占最多） |
-| 多语言 | 内置简体中文 / English 双语，界面语言跟随 DSH 环境（设置 → 通用 → Language / 浏览器语言）自动切换 |
+| 多语言 | 内置简体中文 / English 双语，界面语言跟随 DSH 环境（设置 → 通用 → Language / 浏览器语言）自动切换；本插件自身的描述也随语言切换 |
 | 运行状态 | 已启用/已停用 + Cordis 状态（已挂载 / 等待依赖 / 加载中 / 挂载失败 / 未挂载 / 卸载中） |
 | 描述 / 版本 | 从各包 `package.json` 读取；描述全文在展开行内查看（点"详情"） |
 | 来源 | 仅本插件显示仓库主页地址（https://github.com/runcat-tommy/dsh-plugin-runcat-inventory）；其余插件按安装方式显示（本地链接 / 本地路径 / GitHub / npm / 内置） |
@@ -76,6 +76,8 @@ dsh plugin --profile web remove dsh-plugin-runcat-inventory
 
 完整变更历史见 [CHANGELOG.md](CHANGELOG.md)。
 
+- **v0.3.3**（2026-08-27）：本插件自身的描述随界面语言切换——中文环境
+  显示中文描述，英文环境显示英文描述（"详情"展开行的 Description 内容）。
 - **v0.3.2**（2026-08-27）：修复——仅本插件显示仓库地址，其余插件恢复按
   安装方式显示来源；来源列内容加断行保护（`word-break: break-all`），
   长 URL 不再溢出到"操作"列。
