@@ -1,6 +1,31 @@
 # 更新记录 (Changelog)
 
-本文件记录 `dsh-plugin-runcat-inventory`（逃咪-插件总览）的版本变更。
+本文件记录 `dsh-plugin-runcat-inventory`（逃咪-插件总览 / Runcat Plugin Overview）的版本变更。
+
+## [0.3.0] - 2026-08-27
+
+### 国际化（界面语言随 DSH 环境自动切换）
+
+- **双语字典**：通过 DSH 内置 locale 服务（`@deepseek-ai/dsh-client-locale`）
+  注册简体中文 / English 两套字典，界面语言跟随 DSH 环境（设置 → 通用 →
+  Language 或浏览器语言）自动切换，无需重启。
+- **选项卡名**：中文"逃咪-插件总览"，英文 **Runcat Plugin Overview**
+  （label 改为 locale 函数，语言切换时自动重渲染）。
+- **全部界面文案走字典**：搜索/筛选/排序/按钮/徽章/提示/空状态等 40+ 项
+  全部 `t('key')` 化。
+- **host 彻底国际化**：
+  - 错误消息改为**错误码**（`MISSING_PARAMS`、`PATCH_READ_FAILED`、
+    `PATCH_PARSE_FAILED`、`PATCH_WRITE_FAILED` 等 13 个），由客户端字典翻译；
+  - 来源字段改为 `sourceKind`（link/file/github/npm/builtin/other）+
+    `sourceSpec`（原始 spec），显示文案由客户端翻译。
+- 终端日志（host logger）与 README/CHANGELOG 文档保持中文（运维惯例）。
+
+### 测试
+
+- mock 单元测试同步更新：来源断言改为 `sourceKind`/`sourceSpec`，
+  错误断言改为错误码；403 断言错误码 `FORBIDDEN`。5 用例全部通过。
+
+---
 
 ## [0.2.1] - 2026-08-27
 

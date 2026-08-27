@@ -156,15 +156,18 @@ test('GET /inventory: fields, sources, skip group/include', async () => {
   assert.equal(byId['hello'].fiberPhase, 'active')
   assert.equal(byId['hello'].description, 'demo')
   assert.equal(byId['hello'].version, '0.1.0')
-  assert.equal(byId['hello'].source, '本地链接 (link)')
+  assert.equal(byId['hello'].sourceKind, 'link')
+  assert.equal(byId['hello'].sourceSpec, 'C:/some/hello')
   assert.deepEqual(byId['hello'].config, { greeting: 'hi' })
 
   assert.equal(byId['market'].fiberPhase, 'failed')
-  assert.equal(byId['market'].source, 'GitHub 安装')
+  assert.equal(byId['market'].sourceKind, 'github')
+  assert.equal(byId['market'].sourceSpec, 'github:Luaphes/dsh-plugins-market')
 
   assert.equal(byId['web-search'].enabled, false)
   assert.equal(byId['web-search'].fiberPhase, null)
-  assert.equal(byId['web-search'].source, 'npm 包 (^0.1.0-rc.6)')
+  assert.equal(byId['web-search'].sourceKind, 'npm')
+  assert.equal(byId['web-search'].sourceSpec, '^0.1.0-rc.6')
 
   assert.equal(byId['group-demo'], undefined, 'group entries should be skipped')
 })
@@ -209,6 +212,7 @@ test('security: non-loopback host rejected (403)', async () => {
   const reg = registrations[registrations.length - 1]
   const res = await handle(reg, makeReq({ url: '/runcat-api/inventory', headers: { host: 'evil.example.com', origin: 'http://evil.example.com' } }))
   assert.equal(res.status, 403)
+  assert.equal(JSON.parse(res.body).code, 'FORBIDDEN')
 })
 
 test('validation: missing id/name returns error', async () => {
@@ -221,7 +225,7 @@ test('validation: missing id/name returns error', async () => {
   assert.equal(res.status, 200)
   const data = JSON.parse(res.body)
   assert.equal(data.ok, false)
-  assert.match(data.error, /缺少 id 或 name/)
+  assert.equal(data.code, 'MISSING_PARAMS')
 })
 
 // ── 汇总（留足异步测试完成时间）─────────────────────────────────────
