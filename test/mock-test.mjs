@@ -79,6 +79,7 @@ function fakeCtx() {
     fakeEntry({ id: 'hello', name: 'dsh-plugin-hello', config: { greeting: 'hi' }, fiberState: 2 }),
     fakeEntry({ id: 'market', name: 'dsh-plugins-market', fiberState: 3 }),
     fakeEntry({ id: 'web-search', name: '@deepseek-ai/dsh-web-search-deepseek', disabled: true, fiberState: null }),
+    fakeEntry({ id: 'runcat-inventory', name: 'dsh-plugin-runcat-inventory', fiberState: 2 }),
     fakeEntry({ id: 'group-demo', name: 'some-group', group: true, fiberState: 2 }),
   ]
   return {
@@ -114,15 +115,19 @@ writeFileSync(join(tempDir, 'cordis.patch.yml'), [
   '',
 ].join('\n'))
 const nm = join(tempDir, 'node_modules')
+// hello：无 repository → 回退按安装方式（link）
 mkdirSync(join(nm, 'dsh-plugin-hello'), { recursive: true })
-writeFileSync(join(nm, 'dsh-plugin-hello', 'package.json'), JSON.stringify({
-  name: 'dsh-plugin-hello',
-  version: '0.1.0',
-  description: 'demo',
-  repository: { type: 'git', url: 'git+https://github.com/runcat-tommy/dsh-plugin-hello.git' },
-}))
+writeFileSync(join(nm, 'dsh-plugin-hello', 'package.json'), JSON.stringify({ name: 'dsh-plugin-hello', version: '0.1.0', description: 'demo' }))
 mkdirSync(join(nm, 'dsh-plugins-market'), { recursive: true })
 writeFileSync(join(nm, 'dsh-plugins-market', 'package.json'), JSON.stringify({ name: 'dsh-plugins-market', version: '0.1.0', description: 'market' }))
+// 本插件：带 repository（git+ 前缀与 .git 后缀应被清理）→ 显示仓库地址
+mkdirSync(join(nm, 'dsh-plugin-runcat-inventory'), { recursive: true })
+writeFileSync(join(nm, 'dsh-plugin-runcat-inventory', 'package.json'), JSON.stringify({
+  name: 'dsh-plugin-runcat-inventory',
+  version: '0.3.1',
+  description: 'self',
+  repository: { type: 'git', url: 'git+https://github.com/runcat-tommy/dsh-plugin-runcat-inventory.git' },
+}))
 mkdirSync(join(nm, '@deepseek-ai', 'dsh-web-search-deepseek'), { recursive: true })
 writeFileSync(join(nm, '@deepseek-ai', 'dsh-web-search-deepseek', 'package.json'), JSON.stringify({ name: '@deepseek-ai/dsh-web-search-deepseek', version: '0.1.0-rc.6', description: 'search' }))
 mkdirSync(join(nm, '@deepseek-ai', 'dsh-base'), { recursive: true })
@@ -153,7 +158,7 @@ test('GET /inventory: fields, sources, skip group/include', async () => {
   assert.equal(res.status, 200)
   const data = JSON.parse(res.body)
   assert.equal(data.ok, true)
-  assert.equal(data.entries.length, 3, 'should be 3 non-group entries')
+  assert.equal(data.entries.length, 4, 'should be 4 non-group entries')
   const byId = Object.fromEntries(data.entries.map((e) => [e.id, e]))
 
   assert.equal(byId['hello'].name, 'dsh-plugin-hello')
@@ -161,9 +166,9 @@ test('GET /inventory: fields, sources, skip group/include', async () => {
   assert.equal(byId['hello'].fiberPhase, 'active')
   assert.equal(byId['hello'].description, 'demo')
   assert.equal(byId['hello'].version, '0.1.0')
-  // 有 repository 字段 → 显示清理后的仓库 URL（git+ 前缀和 .git 后缀被去掉）
-  assert.equal(byId['hello'].sourceKind, 'repo')
-  assert.equal(byId['hello'].sourceSpec, 'https://github.com/runcat-tommy/dsh-plugin-hello')
+  // 无 repository 的插件 → 回退按安装方式显示
+  assert.equal(byId['hello'].sourceKind, 'link')
+  assert.equal(byId['hello'].sourceSpec, 'C:/some/hello')
   assert.deepEqual(byId['hello'].config, { greeting: 'hi' })
 
   assert.equal(byId['market'].fiberPhase, 'failed')
@@ -174,6 +179,10 @@ test('GET /inventory: fields, sources, skip group/include', async () => {
   assert.equal(byId['web-search'].fiberPhase, null)
   assert.equal(byId['web-search'].sourceKind, 'npm')
   assert.equal(byId['web-search'].sourceSpec, '^0.1.0-rc.6')
+
+  // 仅本插件：显示清理后的仓库 URL（git+ 前缀和 .git 后缀被去掉）
+  assert.equal(byId['runcat-inventory'].sourceKind, 'repo')
+  assert.equal(byId['runcat-inventory'].sourceSpec, 'https://github.com/runcat-tommy/dsh-plugin-runcat-inventory')
 
   assert.equal(byId['group-demo'], undefined, 'group entries should be skipped')
 })

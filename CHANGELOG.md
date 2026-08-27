@@ -2,6 +2,25 @@
 
 本文件记录 `dsh-plugin-runcat-inventory`（逃咪-插件总览 / Runcat Plugin Overview）的版本变更。
 
+## [0.3.2] - 2026-08-27
+
+### 修复
+
+- **来源列仅本插件显示仓库地址**：上一版错误地让所有带 `repository`
+  字段的插件都显示仓库 URL，已纠正——只有 `dsh-plugin-runcat-inventory`
+  显示 `https://github.com/runcat-tommy/dsh-plugin-runcat-inventory`，
+  其余插件恢复按安装方式显示（link/file/github/npm/builtin）。
+- **来源列内容溢出修复**：长 URL 可能溢出到相邻"操作"列——来源内容
+  增加 `word-break: break-all` + `overflow-wrap: anywhere` 强制断行，
+  内容始终在 21% 列内换行。
+
+### 测试
+
+- mock 测试更新：hello 恢复 `link` 来源断言；新增本插件条目
+  （`sourceKind='repo'` + URL 清理断言）。5 用例全部通过。
+
+---
+
 ## [0.3.1] - 2026-08-27
 
 ### 变更
