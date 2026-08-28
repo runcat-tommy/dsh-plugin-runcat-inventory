@@ -2,7 +2,7 @@
 
 [中文](README.md) | **English**
 
-> Version: **v0.3.5** · Changelog: [CHANGELOG.md](CHANGELOG.md)
+> Version: **v0.3.6** · Changelog: [CHANGELOG.en.md](CHANGELOG.en.md) ([中文](CHANGELOG.md))
 
 A better DSH plugin list: **table view, status filters, enable/disable switches (hot-applied), config viewer and copy, automatic zh/en UI switching**.
 Sits alongside the official "Plugin list" tab, registered at **Settings → Plugins → Runcat Plugin Overview** (shown as 逃咪-插件总览 in Chinese).
@@ -33,7 +33,8 @@ dsh-plugin-runcat-inventory/   # local folder name after git clone (same as the 
 │   └── client.js     # Browser half: hand-written ModuleLoader bundle, table UI
 ├── test/
 │   └── mock-test.mjs # host-half unit tests (node test/mock-test.mjs, 5 cases)
-├── CHANGELOG.md      # changelog
+├── CHANGELOG.md      # changelog (Chinese)
+├── CHANGELOG.en.md   # changelog (English)
 ├── README.md         # Chinese docs
 └── README.en.md      # English docs (this file)
 ```
@@ -97,8 +98,9 @@ dsh plugin --profile web remove dsh-plugin-runcat-inventory
 
 ## Changelog
 
-Full history in [CHANGELOG.md](CHANGELOG.md).
+Full history in [CHANGELOG.en.md](CHANGELOG.en.md) ([中文](CHANGELOG.md)).
 
+- **v0.3.6** (2026-08-27): docs — added `CHANGELOG.en.md` (English changelog) with language switcher links on both changelogs.
 - **v0.3.5** (2026-08-27): docs — added Method B (install from GitHub source); added `README.en.md` (English docs) with language switcher links on both READMEs.
 - **v0.3.4** (2026-08-27): docs — folder name unified to `dsh-plugin-runcat-inventory`; added the "Prerequisites" section.
 - **v0.3.3** (2026-08-27): the plugin's own description now follows the UI language (zh/en, in the Details row).

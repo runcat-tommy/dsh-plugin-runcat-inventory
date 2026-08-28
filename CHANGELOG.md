@@ -1,6 +1,18 @@
 # 更新记录 (Changelog)
 
+**中文** | [English](CHANGELOG.en.md)
+
 本文件记录 `dsh-plugin-runcat-inventory`（逃咪-插件总览 / Runcat Plugin Overview）的版本变更。
+
+## [0.3.6] - 2026-08-27
+
+### 文档
+
+- **新增英文版更新记录 `CHANGELOG.en.md`**：完整英文翻译；两份 CHANGELOG
+  顶部互加语言切换链接（`中文 | English`）。
+- 英文 README 的更新记录链接指向英文 CHANGELOG。
+
+---
 
 ## [0.3.5] - 2026-08-27
 

@@ -2,7 +2,7 @@
 
 **中文** | [English](README.en.md)
 
-> 版本：**v0.3.5** · 更新记录见 [CHANGELOG.md](CHANGELOG.md)
+> 版本：**v0.3.6** · 更新记录见 [CHANGELOG.md](CHANGELOG.md)（[English](CHANGELOG.en.md)）
 
 一个更好用的 DSH 插件列表：**表格视图、状态过滤、启用/停用开关（热生效）、配置查看与复制、中英文界面自动切换**。
 与官方"插件列表"并存，注册在 设置 → 插件 → 逃咪-插件总览（英文环境显示 Runcat Plugin Overview）。
@@ -33,7 +33,8 @@ dsh-plugin-runcat-inventory/   # git clone 后的本地文件夹名（与仓库�
 │   └── client.js     # 浏览器半端：ModuleLoader bundle，表格 UI
 ├── test/
 │   └── mock-test.mjs # host 半端单元测试（node test/mock-test.mjs，5 用例）
-├── CHANGELOG.md      # 更新记录
+├── CHANGELOG.md      # 更新记录（中文）
+├── CHANGELOG.en.md   # 更新记录（英文）
 ├── README.md         # 中文说明
 └── README.en.md      # 英文说明
 ```
@@ -110,8 +111,10 @@ dsh plugin --profile web remove dsh-plugin-runcat-inventory
 
 ## 更新记录
 
-完整变更历史见 [CHANGELOG.md](CHANGELOG.md)。
+完整变更历史见 [CHANGELOG.md](CHANGELOG.md)（[English](CHANGELOG.en.md)）。
 
+- **v0.3.6**（2026-08-27）：文档——新增英文版更新记录
+  `CHANGELOG.en.md`，两份 CHANGELOG 互加语言切换链接。
 - **v0.3.5**（2026-08-27）：文档——安装新增"方法 B：GitHub 源直接安装"；
   新增英文说明 `README.en.md`，中英文文档顶部互加语言切换链接。
 - **v0.3.4**（2026-08-27）：文档更新——使用说明的文件夹名统一为
