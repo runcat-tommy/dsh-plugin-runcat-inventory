@@ -1,6 +1,8 @@
 # dsh-plugin-runcat-inventory（逃咪-插件总览）
 
-> 版本：**v0.3.4** · 更新记录见 [CHANGELOG.md](CHANGELOG.md)
+**中文** | [English](README.en.md)
+
+> 版本：**v0.3.5** · 更新记录见 [CHANGELOG.md](CHANGELOG.md)
 
 一个更好用的 DSH 插件列表：**表格视图、状态过滤、启用/停用开关（热生效）、配置查看与复制、中英文界面自动切换**。
 与官方"插件列表"并存，注册在 设置 → 插件 → 逃咪-插件总览（英文环境显示 Runcat Plugin Overview）。
@@ -32,7 +34,8 @@ dsh-plugin-runcat-inventory/   # git clone 后的本地文件夹名（与仓库�
 ├── test/
 │   └── mock-test.mjs # host 半端单元测试（node test/mock-test.mjs，5 用例）
 ├── CHANGELOG.md      # 更新记录
-└── README.md
+├── README.md         # 中文说明
+└── README.en.md      # 英文说明
 ```
 
 ## 前置条件
@@ -50,23 +53,30 @@ dsh-plugin-runcat-inventory/   # git clone 后的本地文件夹名（与仓库�
 
 ## 安装
 
+装进 web profile（如果用的是其他 profile，把 `web` 换成实际名字）。
+
+### 方法 A：本地目录安装（开发/调试推荐）
+
 ```sh
-# 1) 克隆仓库（本地文件夹名即 dsh-plugin-runcat-inventory）
 git clone https://github.com/runcat-tommy/dsh-plugin-runcat-inventory.git
 cd dsh-plugin-runcat-inventory
-
-# 2) 安装到 web profile（自动加入 dsh.profile.bundles）
 dsh plugin --profile web add .
 ```
 
-> 说明：
-> - `dsh plugin add .` 会把本目录以 `link:` 方式装进 profile（本地开发
->   友好：改代码重启即生效，无需重复安装）。
-> - 也可直接用 GitHub 源安装：
->   `dsh plugin --profile web add github:runcat-tommy/dsh-plugin-runcat-inventory`
->   （本插件无构建脚本，无需配置 allowBuilds）。
+> `dsh plugin add .` 会把本目录以 `link:` 方式装进 profile——本地开发
+> 友好：改代码后重启 Web UI 即生效，无需重复安装。
 
-验证：`dsh --profile web --dump-config` 末尾应出现条目——**id 为
+### 方法 B：GitHub 源直接安装
+
+```sh
+dsh plugin --profile web add github:runcat-tommy/dsh-plugin-runcat-inventory
+```
+
+> pnpm 直接从 GitHub 拉取；本插件无构建脚本，无需配置 allowBuilds。
+
+### 验证
+
+`dsh --profile web --dump-config` 末尾应出现条目——**id 为
 `runcat-inventory`、name 为 `dsh-plugin-runcat-inventory`**。
 然后**重启 Web UI**，进入 设置 → 插件 → 逃咪-插件总览（英文环境显示
 Runcat Plugin Overview）。
@@ -102,6 +112,8 @@ dsh plugin --profile web remove dsh-plugin-runcat-inventory
 
 完整变更历史见 [CHANGELOG.md](CHANGELOG.md)。
 
+- **v0.3.5**（2026-08-27）：文档——安装新增"方法 B：GitHub 源直接安装"；
+  新增英文说明 `README.en.md`，中英文文档顶部互加语言切换链接。
 - **v0.3.4**（2026-08-27）：文档更新——使用说明的文件夹名统一为
   `dsh-plugin-runcat-inventory`（与 GitHub 仓库名一致）；新增"前置条件"
   章节（Node.js / DSH / pnpm / Git / 网络）。

@@ -2,6 +2,19 @@
 
 本文件记录 `dsh-plugin-runcat-inventory`（逃咪-插件总览 / Runcat Plugin Overview）的版本变更。
 
+## [0.3.5] - 2026-08-27
+
+### 文档
+
+- **安装新增"方法 B：GitHub 源直接安装"**：
+  `dsh plugin --profile web add github:runcat-tommy/dsh-plugin-runcat-inventory`
+  （与方法 A 本地克隆安装并列，均注明差异：link: 本地开发 / 直接拉取）。
+- **新增英文说明 `README.en.md`**：完整英文版文档（功能/结构/前置条件/
+  安装 A/B/原理/卸载/限制/更新摘要），中英文文档顶部互加语言切换链接
+  （`中文 | English`）。
+
+---
+
 ## [0.3.4] - 2026-08-27
 
 ### 文档
