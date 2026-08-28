@@ -4,6 +4,17 @@
 
 This file records the version history of `dsh-plugin-runcat-inventory` (Runcat Plugin Overview / 逃咪-插件总览).
 
+## [0.3.7] - 2026-08-27
+
+### Docs
+
+- **Added preview screenshots**: `assets/preview-zh.png` (Chinese UI) and
+  `assets/preview-en.png` (English UI); the Chinese README gained a
+  "效果预览" section showing the Chinese screenshot, and the English README
+  gained a "Screenshot" section showing the English one.
+
+---
+
 ## [0.3.6] - 2026-08-27
 
 ### Docs
