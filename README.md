@@ -2,7 +2,7 @@
 
 **中文** | [English](README.en.md)
 
-> 版本：**v0.4.0** · 更新记录见 [CHANGELOG.md](CHANGELOG.md)（[English](CHANGELOG.en.md)）
+> 版本：**v0.4.1** · 更新记录见 [CHANGELOG.md](CHANGELOG.md)（[English](CHANGELOG.en.md)）
 
 一个更好用的 DSH 插件列表：**表格视图、状态过滤、启用/停用开关（热生效）、卸载、配置查看与复制、中英文界面自动切换**。
 入口在 **设置 → 逃咪-插件总览**（设置左侧导航，英文环境显示 Runcat Plugin Overview）。
@@ -23,7 +23,7 @@
 | 来源 | 仅本插件显示仓库主页地址（https://github.com/runcat-tommy/dsh-plugin-runcat-inventory）；其余插件按安装方式显示（本地链接 / 本地路径 / GitHub / npm / 内置） |
 | 详情展开 | 有描述或有配置才显示"详情"按钮；展开后行内查看描述全文 + 配置 JSON，配置可一键复制 |
 | 启用 / 停用 | 编辑 profile 的 `cordis.patch.yml`（用户覆盖层），**HMR 热生效，无需重启** |
-| 卸载 | 操作列"卸载"按钮 + 二次确认；从 profile 移除依赖与 bundle 层，**重启 Web UI 生效**；不可卸载自身与内置包 |
+| 卸载 | 操作列"卸载"按钮 + 二次确认；从 profile 移除依赖与 bundle 层，**重启 Web UI 生效**；不可卸载自身与内置包；卸载后的行在列表中标记"**已卸载**"（置灰、操作禁用），避免重复操作 |
 | 搜索过滤 | 关键字（联合搜索名称/id/描述/来源/版本）+ 状态筛选 |
 | 排序 | 配置顺序（默认）/ 名称 ↑ / 名称 ↓ |
 | 宽度优化 | 无粘性固定列；键盘 ←/→ 横向滚动；窄屏自动隐藏"来源"列 |

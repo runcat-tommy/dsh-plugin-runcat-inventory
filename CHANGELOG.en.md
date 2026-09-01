@@ -4,6 +4,20 @@
 
 This file records the version history of `dsh-plugin-runcat-inventory` (Runcat Plugin Overview / 逃咪-插件总览).
 
+## [0.4.1] - 2026-08-27
+
+### Improvements
+
+- **Mark uninstalled plugins in the list**: the host records successfully
+  uninstalled package names in-process and the inventory rows carry an
+  `uninstalled` flag; such rows show a red "**Uninstalled**" badge, are
+  dimmed, and their Actions column is replaced with a muted hint — users
+  can see at a glance which plugins were uninstalled and won't click again.
+- **Self-healing**: if a plugin later becomes a profile dependency again,
+  the marker is cleared automatically.
+
+---
+
 ## [0.4.0] - 2026-08-27
 
 ### Features

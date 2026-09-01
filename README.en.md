@@ -2,7 +2,7 @@
 
 [中文](README.md) | **English**
 
-> Version: **v0.4.0** · Changelog: [CHANGELOG.en.md](CHANGELOG.en.md) ([中文](CHANGELOG.md))
+> Version: **v0.4.1** · Changelog: [CHANGELOG.en.md](CHANGELOG.en.md) ([中文](CHANGELOG.md))
 
 A better DSH plugin list: **table view, status filters, enable/disable switches (hot-applied), uninstall, config viewer and copy, automatic zh/en UI switching**.
 Entry point: **Settings → Runcat Plugin Overview** (in the Settings left navigation; shown as 逃咪-插件总览 in Chinese).
@@ -23,7 +23,7 @@ Entry point: **Settings → Runcat Plugin Overview** (in the Settings left navig
 | Source | Only this plugin shows its repository home page (https://github.com/runcat-tommy/dsh-plugin-runcat-inventory); others show the install method (local link / local path / GitHub / npm / built-in) |
 | Details expansion | The "Details" button appears when a plugin has a description or a config; the expanded row shows the full description + config JSON, with one-click copy |
 | Enable / Disable | Edits the profile's `cordis.patch.yml` (user override layer), **hot-applied via HMR — no restart needed** |
-| Uninstall | "Uninstall" button in the Actions column with a confirm dialog; removes the dependency and bundle layer from the profile, **effective after restarting the Web UI**; cannot uninstall itself or built-in packages |
+| Uninstall | "Uninstall" button in the Actions column with a confirm dialog; removes the dependency and bundle layer from the profile, **effective after restarting the Web UI**; cannot uninstall itself or built-in packages; uninstalled rows are marked "**Uninstalled**" in the list (dimmed, actions disabled) to avoid repeat operations |
 | Search & filter | Keyword (combined search over name / id / description / source / version) + status filter |
 | Sorting | Config order (default) / Name ↑ / Name ↓ |
 | Width | No sticky columns; ←/→ arrow keys scroll horizontally; the Source column hides on narrow screens |
