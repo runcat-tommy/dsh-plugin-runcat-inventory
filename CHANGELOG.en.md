@@ -4,6 +4,21 @@
 
 This file records the version history of `dsh-plugin-runcat-inventory` (Runcat Plugin Overview / 逃咪-插件总览).
 
+## [0.3.8] - 2026-08-27
+
+### Changes
+
+- **Installation gained "Method A: npm install"** (simplest, recommended):
+  `dsh plugin --profile web add dsh-plugin-runcat-inventory`; the previous
+  "local folder" and "GitHub source" methods became C / B; both READMEs
+  updated.
+- **`package.json` gained a `dsh.marketplace` declaration**:
+  `{profiles: ["web"], requiresBuildApproval: false, requiresRestart: true, manualSteps: false}`,
+  so the dsh-plugin-marketplace scanner can classify it correctly
+  (pure JS, no build, web platform).
+
+---
+
 ## [0.3.7] - 2026-08-27
 
 ### Release

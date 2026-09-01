@@ -2,7 +2,7 @@
 
 **中文** | [English](README.en.md)
 
-> 版本：**v0.3.7** · 更新记录见 [CHANGELOG.md](CHANGELOG.md)（[English](CHANGELOG.en.md)）
+> 版本：**v0.3.8** · 更新记录见 [CHANGELOG.md](CHANGELOG.md)（[English](CHANGELOG.en.md)）
 
 一个更好用的 DSH 插件列表：**表格视图、状态过滤、启用/停用开关（热生效）、配置查看与复制、中英文界面自动切换**。
 与官方"插件列表"并存，注册在 设置 → 插件 → 逃咪-插件总览（英文环境显示 Runcat Plugin Overview）。
@@ -53,8 +53,8 @@ dsh-plugin-runcat-inventory/   # git clone 后的本地文件夹名（与仓库�
 | **Node.js** | ✅ 必需 | DSH 本身是 Node 程序，必须安装 Node.js（建议 20+ 或最新 LTS，无严格版本下限要求） |
 | **DSH CLI** | ✅ 必需 | `npm i -g @deepseek-ai/dsh` |
 | **pnpm** | ✅ 必需 | `dsh plugin` 命令是 pnpm 的转发器，未安装会报 `pnpm not found on PATH`；`npm i -g pnpm` |
-| **Git** | ⚠️ 视安装方式 | 从 GitHub 克隆仓库、或直接 `dsh plugin add github:runcat-tommy/dsh-plugin-runcat-inventory` 时需要；仅用本地文件夹安装则不需要 |
-| **网络** | ⚠️ 视环境 | 需要能访问 GitHub；直连不通时可为 git 配置代理，如 `git config --global http.https://github.com.proxy http://127.0.0.1:7897` |
+| **Git** | ⚠️ 视安装方式 | 方法 B（GitHub 源）/ 方法 C（本地开发）需要；方法 A（npm 安装）不需要 |
+| **网络** | ⚠️ 视环境 | 方法 A 需要能访问 npm registry；方法 B/C 需要能访问 GitHub，直连不通时可为 git 配置代理，如 `git config --global http.https://github.com.proxy http://127.0.0.1:7897` |
 
 > 本插件自身**零依赖**：host 半端只用 Node 内置模块（外加惰性解析 profile
 > 里的 js-yaml），浏览器半端手写 ModuleLoader bundle，无需额外安装任何包。
@@ -63,7 +63,25 @@ dsh-plugin-runcat-inventory/   # git clone 后的本地文件夹名（与仓库�
 
 装进 web profile（如果用的是其他 profile，把 `web` 换成实际名字）。
 
-### 方法 A：本地目录安装（开发/调试推荐）
+### 方法 A：npm 安装（最简，推荐）
+
+```sh
+dsh plugin --profile web add dsh-plugin-runcat-inventory
+```
+
+> 直接从 npm registry 拉取，包已发布：
+> https://www.npmjs.com/package/dsh-plugin-runcat-inventory
+> （若你的 npm/pnpm 配置了镜像，等待镜像同步后即可安装。）
+
+### 方法 B：GitHub 源直接安装
+
+```sh
+dsh plugin --profile web add github:runcat-tommy/dsh-plugin-runcat-inventory
+```
+
+> pnpm 直接从 GitHub 拉取；本插件无构建脚本，无需配置 allowBuilds。
+
+### 方法 C：本地目录安装（开发/调试）
 
 ```sh
 git clone https://github.com/runcat-tommy/dsh-plugin-runcat-inventory.git
@@ -73,14 +91,6 @@ dsh plugin --profile web add .
 
 > `dsh plugin add .` 会把本目录以 `link:` 方式装进 profile——本地开发
 > 友好：改代码后重启 Web UI 即生效，无需重复安装。
-
-### 方法 B：GitHub 源直接安装
-
-```sh
-dsh plugin --profile web add github:runcat-tommy/dsh-plugin-runcat-inventory
-```
-
-> pnpm 直接从 GitHub 拉取；本插件无构建脚本，无需配置 allowBuilds。
 
 ### 验证
 
@@ -120,6 +130,9 @@ dsh plugin --profile web remove dsh-plugin-runcat-inventory
 
 完整变更历史见 [CHANGELOG.md](CHANGELOG.md)（[English](CHANGELOG.en.md)）。
 
+- **v0.3.8**（2026-08-27）：安装新增"方法 A：npm 安装"（最简推荐），
+  原方法顺延为 B/C；`package.json` 增加 `dsh.marketplace` 声明
+  （供 dsh-plugin-marketplace 扫描器分类）。
 - **v0.3.7**（2026-08-27）：新增效果预览图——中文 README 展示中文界面截图，
   英文 README 展示英文界面截图（`assets/` 目录）。
 - **v0.3.6**（2026-08-27）：文档——新增英文版更新记录

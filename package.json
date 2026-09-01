@@ -1,6 +1,6 @@
 {
   "name": "dsh-plugin-runcat-inventory",
-  "version": "0.3.7",
+  "version": "0.3.8",
   "description": "逃咪-插件总览（Runcat Plugin Overview）：更好用的 DSH 插件列表 —— 表格视图、状态过滤、启用/停用开关（热生效）、配置查看与复制、中英双语界面。A better DSH plugin list.",
   "repository": {
     "type": "git",
@@ -31,6 +31,14 @@
       "inject": [
         "@deepseek-ai/dsh-client-runtime"
       ]
+    },
+    "marketplace": {
+      "profiles": [
+        "web"
+      ],
+      "requiresBuildApproval": false,
+      "requiresRestart": true,
+      "manualSteps": false
     }
   },
   "files": [

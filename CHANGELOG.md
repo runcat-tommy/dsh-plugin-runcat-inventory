@@ -4,6 +4,19 @@
 
 本文件记录 `dsh-plugin-runcat-inventory`（逃咪-插件总览 / Runcat Plugin Overview）的版本变更。
 
+## [0.3.8] - 2026-08-27
+
+### 变更
+
+- **安装新增"方法 A：npm 安装"**（最简，推荐）：
+  `dsh plugin --profile web add dsh-plugin-runcat-inventory`；原"本地目录
+  安装"和"GitHub 源安装"顺延为方法 C / B；中英文 README 同步。
+- **`package.json` 增加 `dsh.marketplace` 声明**：
+  `{profiles: ["web"], requiresBuildApproval: false, requiresRestart: true, manualSteps: false}`，
+  供 dsh-plugin-marketplace 扫描器正确分类（纯 JS、无构建、web 平台）。
+
+---
+
 ## [0.3.7] - 2026-08-27
 
 ### 发布

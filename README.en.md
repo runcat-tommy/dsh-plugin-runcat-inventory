@@ -2,7 +2,7 @@
 
 [中文](README.md) | **English**
 
-> Version: **v0.3.7** · Changelog: [CHANGELOG.en.md](CHANGELOG.en.md) ([中文](CHANGELOG.md))
+> Version: **v0.3.8** · Changelog: [CHANGELOG.en.md](CHANGELOG.en.md) ([中文](CHANGELOG.md))
 
 A better DSH plugin list: **table view, status filters, enable/disable switches (hot-applied), config viewer and copy, automatic zh/en UI switching**.
 Sits alongside the official "Plugin list" tab, registered at **Settings → Plugins → Runcat Plugin Overview** (shown as 逃咪-插件总览 in Chinese).
@@ -53,8 +53,8 @@ dsh-plugin-runcat-inventory/   # local folder name after git clone (same as the 
 | **Node.js** | ✅ Required | DSH itself is a Node program; install Node.js (suggest 20+ or the latest LTS; no strict minimum) |
 | **DSH CLI** | ✅ Required | `npm i -g @deepseek-ai/dsh` |
 | **pnpm** | ✅ Required | `dsh plugin` forwards to pnpm; without it you get `pnpm not found on PATH`; install with `npm i -g pnpm` |
-| **Git** | ⚠️ Depends on method | Needed to clone the repo or to install from the GitHub source (`dsh plugin add github:...`); not needed for a local-folder install |
-| **Network** | ⚠️ Depends on environment | Needs access to GitHub; if direct connections fail, configure a git proxy, e.g. `git config --global http.https://github.com.proxy http://127.0.0.1:7897` |
+| **Git** | ⚠️ Depends on method | Needed for Method B (GitHub source) or Method C (local development); not needed for Method A (npm) |
+| **Network** | ⚠️ Depends on environment | Method A needs access to the npm registry; Methods B/C need access to GitHub — if direct connections fail, configure a git proxy, e.g. `git config --global http.https://github.com.proxy http://127.0.0.1:7897` |
 
 > This plugin itself has **zero dependencies**: the host half only uses Node built-ins (plus lazily resolving js-yaml from the profile), and the browser half is a hand-written ModuleLoader bundle. Nothing extra to install.
 
@@ -62,15 +62,15 @@ dsh-plugin-runcat-inventory/   # local folder name after git clone (same as the 
 
 Installs into the `web` profile (replace `web` with your profile name if different).
 
-### Method A: local folder (recommended for development/debugging)
+### Method A: npm install (simplest, recommended)
 
 ```sh
-git clone https://github.com/runcat-tommy/dsh-plugin-runcat-inventory.git
-cd dsh-plugin-runcat-inventory
-dsh plugin --profile web add .
+dsh plugin --profile web add dsh-plugin-runcat-inventory
 ```
 
-> `dsh plugin add .` links this folder into the profile via `link:` — dev-friendly: code changes take effect after restarting the Web UI, no reinstall needed.
+> Pulls directly from the npm registry; the package is published at
+> https://www.npmjs.com/package/dsh-plugin-runcat-inventory
+> (if your npm/pnpm is configured with a mirror, wait for the mirror to sync).
 
 ### Method B: install directly from GitHub
 
@@ -79,6 +79,16 @@ dsh plugin --profile web add github:runcat-tommy/dsh-plugin-runcat-inventory
 ```
 
 > pnpm pulls the repo directly from GitHub; this plugin has no build scripts, so no `allowBuilds` is needed.
+
+### Method C: local folder (for development/debugging)
+
+```sh
+git clone https://github.com/runcat-tommy/dsh-plugin-runcat-inventory.git
+cd dsh-plugin-runcat-inventory
+dsh plugin --profile web add .
+```
+
+> `dsh plugin add .` links this folder into the profile via `link:` — dev-friendly: code changes take effect after restarting the Web UI, no reinstall needed.
 
 ### Verify
 
@@ -107,6 +117,7 @@ dsh plugin --profile web remove dsh-plugin-runcat-inventory
 
 Full history in [CHANGELOG.en.md](CHANGELOG.en.md) ([中文](CHANGELOG.md)).
 
+- **v0.3.8** (2026-08-27): installation gained "Method A: npm install" (simplest, recommended); the previous methods became B/C; `package.json` gained a `dsh.marketplace` declaration (for the dsh-plugin-marketplace scanner).
 - **v0.3.7** (2026-08-27): added preview screenshots — the Chinese README shows the Chinese-UI screenshot, the English README shows the English-UI screenshot (`assets/` folder).
 - **v0.3.6** (2026-08-27): docs — added `CHANGELOG.en.md` (English changelog) with language switcher links on both changelogs.
 - **v0.3.5** (2026-08-27): docs — added Method B (install from GitHub source); added `README.en.md` (English docs) with language switcher links on both READMEs.
