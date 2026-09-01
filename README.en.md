@@ -2,7 +2,7 @@
 
 [中文](README.md) | **English**
 
-> Version: **v0.4.1** · Changelog: [CHANGELOG.en.md](CHANGELOG.en.md) ([中文](CHANGELOG.md))
+> Version: **v1.1.0** · Changelog: [CHANGELOG.en.md](CHANGELOG.en.md) ([中文](CHANGELOG.md))
 
 A better DSH plugin list: **table view, status filters, enable/disable switches (hot-applied), uninstall, config viewer and copy, automatic zh/en UI switching**.
 Entry point: **Settings → Runcat Plugin Overview** (in the Settings left navigation; shown as 逃咪-插件总览 in Chinese).
@@ -119,6 +119,7 @@ dsh plugin --profile web remove dsh-plugin-runcat-inventory
 
 Full history in [CHANGELOG.en.md](CHANGELOG.en.md) ([中文](CHANGELOG.md)).
 
+- **v1.1.0** (2026-08-27): **milestone** — the version line moved to 1.x and the release was published to npm (https://www.npmjs.com/package/dsh-plugin-runcat-inventory), aggregating everything since 0.4.x (uninstall + "Uninstalled" markers, left-navigation entry, zh/en UI, npm install).
 - **v0.4.0** (2026-08-27): added **uninstall** (button in the Actions column + confirm dialog + cannot uninstall itself or built-ins); the entry point moved from the "Settings → Plugins" tab to the **Settings left navigation** (Settings → Runcat Plugin Overview).
 - **v0.3.8** (2026-08-27): installation gained "Method A: npm install" (simplest, recommended); the previous methods became B/C; `package.json` gained a `dsh.marketplace` declaration (for the dsh-plugin-marketplace scanner).
 - **v0.3.7** (2026-08-27): added preview screenshots — the Chinese README shows the Chinese-UI screenshot, the English README shows the English-UI screenshot (`assets/` folder).

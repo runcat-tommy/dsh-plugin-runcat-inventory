@@ -4,6 +4,18 @@
 
 本文件记录 `dsh-plugin-runcat-inventory`（逃咪-插件总览 / Runcat Plugin Overview）的版本变更。
 
+## [1.1.0] - 2026-08-27
+
+### 里程碑
+
+- **版本线提升至 1.x**：自 0.4.x 以来的全部功能随本版发布——卸载（二次确认、
+  防自卸/内置包、已卸载标记）、入口迁移至设置左侧导航、中英双语界面、
+  npm 一键安装等。
+- **发布到 npm**：https://www.npmjs.com/package/dsh-plugin-runcat-inventory
+  （1.1.0，MIT，零依赖）。
+
+---
+
 ## [0.4.1] - 2026-08-27
 
 ### 改进

@@ -2,7 +2,7 @@
 
 **中文** | [English](README.en.md)
 
-> 版本：**v0.4.1** · 更新记录见 [CHANGELOG.md](CHANGELOG.md)（[English](CHANGELOG.en.md)）
+> 版本：**v1.1.0** · 更新记录见 [CHANGELOG.md](CHANGELOG.md)（[English](CHANGELOG.en.md)）
 
 一个更好用的 DSH 插件列表：**表格视图、状态过滤、启用/停用开关（热生效）、卸载、配置查看与复制、中英文界面自动切换**。
 入口在 **设置 → 逃咪-插件总览**（设置左侧导航，英文环境显示 Runcat Plugin Overview）。
@@ -132,6 +132,9 @@ dsh plugin --profile web remove dsh-plugin-runcat-inventory
 
 完整变更历史见 [CHANGELOG.md](CHANGELOG.md)（[English](CHANGELOG.en.md)）。
 
+- **v1.1.0**（2026-08-27）：**里程碑版本**——版本线提升至 1.x，发布到 npm
+  （https://www.npmjs.com/package/dsh-plugin-runcat-inventory），聚合 0.4.x
+  全部功能（卸载 + 已卸载标记、左侧导航入口、中英双语、npm 安装）。
 - **v0.4.0**（2026-08-27）：新增**卸载**功能（操作列按钮 + 二次确认 +
   防卸载自身/内置包）；入口从"设置 → 插件"选项卡迁移到**设置左侧导航**
   （设置 → 逃咪-插件总览）。

@@ -4,6 +4,19 @@
 
 This file records the version history of `dsh-plugin-runcat-inventory` (Runcat Plugin Overview / 逃咪-插件总览).
 
+## [1.1.0] - 2026-08-27
+
+### Milestone
+
+- **Version line moved to 1.x**: everything since 0.4.x ships in this
+  release — uninstall (confirm dialog, cannot uninstall itself/built-ins,
+  "Uninstalled" markers), entry point moved to the Settings left navigation,
+  zh/en UI, one-command npm install, etc.
+- **Published to npm**: https://www.npmjs.com/package/dsh-plugin-runcat-inventory
+  (1.1.0, MIT, zero dependencies).
+
+---
+
 ## [0.4.1] - 2026-08-27
 
 ### Improvements
