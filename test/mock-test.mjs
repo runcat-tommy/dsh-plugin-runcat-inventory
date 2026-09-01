@@ -19,6 +19,9 @@ import { pathToFileURL } from 'node:url'
 const REAL_JS_YAML = 'C:/Users/yeyu1/.dsh/profiles/node_modules/js-yaml'
 const PLUGIN_URL = 'file:///C:/Users/yeyu1/.dsh/profiles/web/node_modules/dsh-plugin-runcat-inventory/lib/index.js'
 
+// 测试保持离线/确定性：关闭 npm 版本扫描（host 读取此环境变量）
+process.env.RUNCAT_SKIP_UPDATE_SCAN = '1'
+
 let passed = 0
 let failed = 0
 function test(name, fn) {
@@ -159,6 +162,7 @@ test('GET /inventory: fields, sources, skip group/include', async () => {
   const data = JSON.parse(res.body)
   assert.equal(data.ok, true)
   assert.equal(data.entries.length, 4, 'should be 4 non-group entries')
+  assert.equal(data.updatesCount, 0, 'skip-scan env → no update markers')
   const byId = Object.fromEntries(data.entries.map((e) => [e.id, e]))
 
   assert.equal(byId['hello'].name, 'dsh-plugin-hello')
@@ -262,6 +266,24 @@ test('uninstall guards: missing name / self / not-a-dependency', async () => {
 
   // 3) 不是 profile 依赖（内置包等）→ 不触发真实 dsh 进程
   req = makeReq({ method: 'POST', url: '/runcat-api/uninstall' })
+  req._feed({ name: '@deepseek-ai/dsh-base' })
+  res = await handle(reg, req)
+  assert.equal(JSON.parse(res.body).code, 'NOT_INSTALLED')
+})
+
+test('update guards: missing name / not-a-dependency', async () => {
+  const mod = await import(PLUGIN_URL)
+  mod.apply(fakeCtx())
+  const reg = registrations[registrations.length - 1]
+
+  // 1) 缺 name
+  let req = makeReq({ method: 'POST', url: '/runcat-api/update' })
+  req._feed({})
+  let res = await handle(reg, req)
+  assert.equal(JSON.parse(res.body).code, 'MISSING_PARAMS')
+
+  // 2) 不是 profile 依赖 → 不触发真实 dsh 进程
+  req = makeReq({ method: 'POST', url: '/runcat-api/update' })
   req._feed({ name: '@deepseek-ai/dsh-base' })
   res = await handle(reg, req)
   assert.equal(JSON.parse(res.body).code, 'NOT_INSTALLED')

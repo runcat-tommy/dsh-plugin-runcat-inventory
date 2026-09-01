@@ -4,6 +4,41 @@
 
 This file records the version history of `dsh-plugin-runcat-inventory` (Runcat Plugin Overview / 逃咪-插件总览).
 
+## [1.2.0] - 2026-08-27
+
+### New feature: update reminders
+
+- **Version checks**: the host queries `registry.npmjs.org/<pkg>/latest` and
+  compares with the installed version using a minimal semver comparator;
+  **batched scanning** (4 per batch, 200ms gap, concurrency 4, 8s per-package
+  timeout, 1h success cache / 30s failure cooldown); the plugin itself is
+  checked in the first batch.
+- **Self-update card**: when this plugin has a new version, a prominent card
+  appears at the **top of the panel** (current → latest + changelog link +
+  "Update now / Not now"); after updating it becomes a "Restart to apply"
+  notice.
+- **Other plugins**: the version column highlights `vX → vY` (new version in
+  blue) + a primary "Update" button in the Actions column + a top banner
+  (count and names).
+- **Update execution**: confirm dialog → the host serially runs
+  `dsh plugin --profile <p> add <name>` (concurrent runs return `BUSY`) →
+  **post-install version verification** (command succeeded but version
+  unchanged → `VERSION_MISMATCH`, hinting at npm mirror sync delay) → success
+  marks "Restart to apply" (`pendingRestart`, amber badge + disabled actions).
+- **Source semantics**: only profile dependencies that are not link/file/builtin
+  participate; GitHub-source updates show a "switches to the npm source" note.
+- **Toggle**: `RUNCAT_SKIP_UPDATE_SCAN=1` disables scanning (offline/tests).
+- New error codes: `BUSY / UPDATE_FAILED / VERSION_MISMATCH` (translated
+  client-side, zh/en).
+
+### Tests
+
+- mock suite gained update guard cases (MISSING_PARAMS / NOT_INSTALLED, none
+  spawn a real process); scanning is disabled in the test environment to stay
+  offline. All 7 cases pass.
+
+---
+
 ## [1.1.0] - 2026-08-27
 
 ### Milestone

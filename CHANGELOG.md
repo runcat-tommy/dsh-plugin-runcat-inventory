@@ -4,6 +4,35 @@
 
 本文件记录 `dsh-plugin-runcat-inventory`（逃咪-插件总览 / Runcat Plugin Overview）的版本变更。
 
+## [1.2.0] - 2026-08-27
+
+### 新功能：更新提醒
+
+- **版本检测**：host 查询 `registry.npmjs.org/<pkg>/latest`，与本地版本做
+  极简 semver 比较；**分批扫描**（每批 4 个、批间 200ms、并发 4、单包 8s
+  超时、成功缓存 1h / 失败冷却 30s）；本插件自身排第一批。
+- **本插件自更新卡片**：自身有新版本时在**面板最上方**显示醒目卡片
+  （当前版本 → 最新版本 + 更新日志链接 + "立即更新 / 暂时不用"）；
+  更新后卡片变为"重启生效"提示。
+- **其他插件更新**：版本列 `vX → vY` 高亮（新版本蓝色）+ 操作列主色
+  "更新"按钮 + 顶部横幅（计数与名称）。
+- **更新执行**：确认弹窗 → host 串行执行 `dsh plugin --profile <p> add <name>`
+  （并发进行中返回 `BUSY`）→ **安装后版本校验**（命令成功但版本未变 →
+  `VERSION_MISMATCH`，提示 npm 镜像同步延迟）→ 成功标记"重启生效"
+  （`pendingRestart`，整行琥珀色徽章 + 操作置灰）。
+- **来源语义**：仅 profile 依赖且非 link/file/builtin 的包参与检测；
+  github 源更新时弹窗提示"将切换为 npm 源"。
+- **开关**：环境变量 `RUNCAT_SKIP_UPDATE_SCAN=1` 可关闭扫描（离线/测试）。
+- 新增错误码：`BUSY / UPDATE_FAILED / VERSION_MISMATCH`（客户端字典翻译，
+  zh/en）。
+
+### 测试
+
+- mock 新增 update 守卫用例（MISSING_PARAMS / NOT_INSTALLED，不触发真实
+  进程）；测试环境关闭版本扫描保持离线。7 用例全部通过。
+
+---
+
 ## [1.1.0] - 2026-08-27
 
 ### 里程碑
