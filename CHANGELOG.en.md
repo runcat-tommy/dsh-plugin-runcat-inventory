@@ -6,6 +6,20 @@ This file records the version history of `dsh-plugin-runcat-inventory` (Runcat P
 
 ## [0.3.7] - 2026-08-27
 
+### Release
+
+- **Published to npm**: https://www.npmjs.com/package/dsh-plugin-runcat-inventory
+  (v0.3.7, MIT, zero dependencies). It can now be installed directly with
+  `dsh plugin --profile web add dsh-plugin-runcat-inventory`.
+- Pre-publish metadata: `author` / `homepage` / `bugs` / `publishConfig`
+  (registry pinned to the official source) / `files` extended (docs and
+  screenshots included) / `keywords` gained `dsh-plugin`; added an MIT
+  `LICENSE` (Copyright runcat-tommy).
+- **The npm page README is English**: npm only renders `README.md`, so at
+  publish time the content of `README.en.md` temporarily replaces
+  `README.md`, then the Chinese version is restored. **Repeat this step on
+  every future publish** (or switch back to a Chinese page — see the README).
+
 ### Docs
 
 - **Added preview screenshots**: `assets/preview-zh.png` (Chinese UI) and

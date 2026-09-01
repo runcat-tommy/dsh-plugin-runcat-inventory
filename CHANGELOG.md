@@ -6,6 +6,18 @@
 
 ## [0.3.7] - 2026-08-27
 
+### 发布
+
+- **已发布到 npm**：https://www.npmjs.com/package/dsh-plugin-runcat-inventory
+  （v0.3.7，MIT，零依赖）。此后可直接 `dsh plugin --profile web add
+  dsh-plugin-runcat-inventory` 从 npm 安装。
+- 发布前补全包元信息：`author` / `homepage` / `bugs` / `publishConfig`
+  （registry 固定为官方源）/ `files` 扩展（含文档与效果图）/ `keywords`
+  新增 `dsh-plugin`；新增 MIT `LICENSE`（Copyright runcat-tommy）。
+- **npm 页面 README 为英文**：npm 只渲染 `README.md`，发布时临时用
+  `README.en.md` 内容替换 `README.md`，发布后恢复中文。**未来每次发布
+  需重复此步骤**（或改回中文页面，见 README 说明）。
+
 ### 文档
 
 - **新增效果预览图**：`assets/preview-zh.png`（中文界面）、
