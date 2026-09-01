@@ -243,6 +243,30 @@ test('validation: missing id/name returns error', async () => {
   assert.equal(data.code, 'MISSING_PARAMS')
 })
 
+test('uninstall guards: missing name / self / not-a-dependency', async () => {
+  const mod = await import(PLUGIN_URL)
+  mod.apply(fakeCtx())
+  const reg = registrations[registrations.length - 1]
+
+  // 1) 缺 name
+  let req = makeReq({ method: 'POST', url: '/runcat-api/uninstall' })
+  req._feed({})
+  let res = await handle(reg, req)
+  assert.equal(JSON.parse(res.body).code, 'MISSING_PARAMS')
+
+  // 2) 禁止卸载自身
+  req = makeReq({ method: 'POST', url: '/runcat-api/uninstall' })
+  req._feed({ name: 'dsh-plugin-runcat-inventory' })
+  res = await handle(reg, req)
+  assert.equal(JSON.parse(res.body).code, 'SELF_UNINSTALL_DENIED')
+
+  // 3) 不是 profile 依赖（内置包等）→ 不触发真实 dsh 进程
+  req = makeReq({ method: 'POST', url: '/runcat-api/uninstall' })
+  req._feed({ name: '@deepseek-ai/dsh-base' })
+  res = await handle(reg, req)
+  assert.equal(JSON.parse(res.body).code, 'NOT_INSTALLED')
+})
+
 // ── 汇总（留足异步测试完成时间）─────────────────────────────────────
 setTimeout(() => {
   rmSync(tempDir, { recursive: true, force: true })

@@ -2,10 +2,10 @@
 
 **中文** | [English](README.en.md)
 
-> 版本：**v0.3.8** · 更新记录见 [CHANGELOG.md](CHANGELOG.md)（[English](CHANGELOG.en.md)）
+> 版本：**v0.4.0** · 更新记录见 [CHANGELOG.md](CHANGELOG.md)（[English](CHANGELOG.en.md)）
 
-一个更好用的 DSH 插件列表：**表格视图、状态过滤、启用/停用开关（热生效）、配置查看与复制、中英文界面自动切换**。
-与官方"插件列表"并存，注册在 设置 → 插件 → 逃咪-插件总览（英文环境显示 Runcat Plugin Overview）。
+一个更好用的 DSH 插件列表：**表格视图、状态过滤、启用/停用开关（热生效）、卸载、配置查看与复制、中英文界面自动切换**。
+入口在 **设置 → 逃咪-插件总览**（设置左侧导航，英文环境显示 Runcat Plugin Overview）。
 
 ## 效果预览
 
@@ -16,12 +16,14 @@
 | 能力 | 说明 |
 |---|---|
 | 表格视图 | 4 列固定比例：名称 36% / 状态 15% / 来源 21% / 操作 28%（名称占最多） |
+| 入口位置 | 直接注册在 **设置 → 逃咪-插件总览**（左侧导航，紧跟"插件"之后） |
 | 多语言 | 内置简体中文 / English 双语，界面语言跟随 DSH 环境（设置 → 通用 → Language / 浏览器语言）自动切换；本插件自身的描述也随语言切换 |
 | 运行状态 | 已启用/已停用 + Cordis 状态（已挂载 / 等待依赖 / 加载中 / 挂载失败 / 未挂载 / 卸载中） |
 | 描述 / 版本 | 从各包 `package.json` 读取；描述全文在展开行内查看（点"详情"） |
 | 来源 | 仅本插件显示仓库主页地址（https://github.com/runcat-tommy/dsh-plugin-runcat-inventory）；其余插件按安装方式显示（本地链接 / 本地路径 / GitHub / npm / 内置） |
 | 详情展开 | 有描述或有配置才显示"详情"按钮；展开后行内查看描述全文 + 配置 JSON，配置可一键复制 |
 | 启用 / 停用 | 编辑 profile 的 `cordis.patch.yml`（用户覆盖层），**HMR 热生效，无需重启** |
+| 卸载 | 操作列"卸载"按钮 + 二次确认；从 profile 移除依赖与 bundle 层，**重启 Web UI 生效**；不可卸载自身与内置包 |
 | 搜索过滤 | 关键字（联合搜索名称/id/描述/来源/版本）+ 状态筛选 |
 | 排序 | 配置顺序（默认）/ 名称 ↑ / 名称 ↓ |
 | 宽度优化 | 无粘性固定列；键盘 ←/→ 横向滚动；窄屏自动隐藏"来源"列 |
@@ -96,7 +98,7 @@ dsh plugin --profile web add .
 
 `dsh --profile web --dump-config` 末尾应出现条目——**id 为
 `runcat-inventory`、name 为 `dsh-plugin-runcat-inventory`**。
-然后**重启 Web UI**，进入 设置 → 插件 → 逃咪-插件总览（英文环境显示
+然后**重启 Web UI**，进入 **设置 → 逃咪-插件总览**（左侧导航，英文环境显示
 Runcat Plugin Overview）。
 
 ## 工作原理
@@ -130,6 +132,9 @@ dsh plugin --profile web remove dsh-plugin-runcat-inventory
 
 完整变更历史见 [CHANGELOG.md](CHANGELOG.md)（[English](CHANGELOG.en.md)）。
 
+- **v0.4.0**（2026-08-27）：新增**卸载**功能（操作列按钮 + 二次确认 +
+  防卸载自身/内置包）；入口从"设置 → 插件"选项卡迁移到**设置左侧导航**
+  （设置 → 逃咪-插件总览）。
 - **v0.3.8**（2026-08-27）：安装新增"方法 A：npm 安装"（最简推荐），
   原方法顺延为 B/C；`package.json` 增加 `dsh.marketplace` 声明
   （供 dsh-plugin-marketplace 扫描器分类）。

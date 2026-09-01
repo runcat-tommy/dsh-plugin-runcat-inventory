@@ -2,10 +2,10 @@
 
 [中文](README.md) | **English**
 
-> Version: **v0.3.8** · Changelog: [CHANGELOG.en.md](CHANGELOG.en.md) ([中文](CHANGELOG.md))
+> Version: **v0.4.0** · Changelog: [CHANGELOG.en.md](CHANGELOG.en.md) ([中文](CHANGELOG.md))
 
-A better DSH plugin list: **table view, status filters, enable/disable switches (hot-applied), config viewer and copy, automatic zh/en UI switching**.
-Sits alongside the official "Plugin list" tab, registered at **Settings → Plugins → Runcat Plugin Overview** (shown as 逃咪-插件总览 in Chinese).
+A better DSH plugin list: **table view, status filters, enable/disable switches (hot-applied), uninstall, config viewer and copy, automatic zh/en UI switching**.
+Entry point: **Settings → Runcat Plugin Overview** (in the Settings left navigation; shown as 逃咪-插件总览 in Chinese).
 
 ## Screenshot
 
@@ -16,12 +16,14 @@ Sits alongside the official "Plugin list" tab, registered at **Settings → Plug
 | Capability | Description |
 |---|---|
 | Table view | 4 columns with fixed ratios: **Name 36% / Status 15% / Source 21% / Actions 28%** (name takes the largest share) |
+| Entry point | Registered directly in **Settings → Runcat Plugin Overview** (left navigation, right after "Plugins") |
 | Languages | Built-in Simplified Chinese / English; the UI follows the DSH environment (Settings → General → Language, or the browser language); the plugin's own description switches too |
 | Runtime status | Enabled/Disabled + Cordis status (Mounted / Waiting for deps / Loading / Mount failed / Not mounted / Unloading) |
 | Description / Version | Read from each package's `package.json`; the full description is shown in the expanded row (click "Details") |
 | Source | Only this plugin shows its repository home page (https://github.com/runcat-tommy/dsh-plugin-runcat-inventory); others show the install method (local link / local path / GitHub / npm / built-in) |
 | Details expansion | The "Details" button appears when a plugin has a description or a config; the expanded row shows the full description + config JSON, with one-click copy |
 | Enable / Disable | Edits the profile's `cordis.patch.yml` (user override layer), **hot-applied via HMR — no restart needed** |
+| Uninstall | "Uninstall" button in the Actions column with a confirm dialog; removes the dependency and bundle layer from the profile, **effective after restarting the Web UI**; cannot uninstall itself or built-in packages |
 | Search & filter | Keyword (combined search over name / id / description / source / version) + status filter |
 | Sorting | Config order (default) / Name ↑ / Name ↓ |
 | Width | No sticky columns; ←/→ arrow keys scroll horizontally; the Source column hides on narrow screens |
@@ -93,7 +95,7 @@ dsh plugin --profile web add .
 ### Verify
 
 `dsh --profile web --dump-config` should end with an entry whose **id is `runcat-inventory` and name is `dsh-plugin-runcat-inventory`**.
-Then **restart the Web UI** and open **Settings → Plugins → Runcat Plugin Overview** (逃咪-插件总览 in Chinese).
+Then **restart the Web UI** and open **Settings → Runcat Plugin Overview** (in the left navigation; 逃咪-插件总览 in Chinese).
 
 ## How it works
 
@@ -117,6 +119,7 @@ dsh plugin --profile web remove dsh-plugin-runcat-inventory
 
 Full history in [CHANGELOG.en.md](CHANGELOG.en.md) ([中文](CHANGELOG.md)).
 
+- **v0.4.0** (2026-08-27): added **uninstall** (button in the Actions column + confirm dialog + cannot uninstall itself or built-ins); the entry point moved from the "Settings → Plugins" tab to the **Settings left navigation** (Settings → Runcat Plugin Overview).
 - **v0.3.8** (2026-08-27): installation gained "Method A: npm install" (simplest, recommended); the previous methods became B/C; `package.json` gained a `dsh.marketplace` declaration (for the dsh-plugin-marketplace scanner).
 - **v0.3.7** (2026-08-27): added preview screenshots — the Chinese README shows the Chinese-UI screenshot, the English README shows the English-UI screenshot (`assets/` folder).
 - **v0.3.6** (2026-08-27): docs — added `CHANGELOG.en.md` (English changelog) with language switcher links on both changelogs.

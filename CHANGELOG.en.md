@@ -4,6 +4,34 @@
 
 This file records the version history of `dsh-plugin-runcat-inventory` (Runcat Plugin Overview / 逃咪-插件总览).
 
+## [0.4.0] - 2026-08-27
+
+### Features
+
+- **Uninstall**: a new "Uninstall" button in the Actions column with a
+  confirm dialog; the host runs
+  `dsh plugin --profile <current profile> remove <package>`, removing the
+  dependency and bundle layer from the profile (pnpm remove + reconcile),
+  **effective after restarting the Web UI**. Guards: cannot uninstall the
+  plugin itself (`SELF_UNINSTALL_DENIED`); packages that are not profile
+  dependencies (built-ins, etc.) cannot be uninstalled (`NOT_INSTALLED`).
+
+### Changes
+
+- **Entry point moved**: from the "Settings → Plugins → Runcat Plugin
+  Overview" tab (`settings.plugins.tab`) to the **Settings left navigation**
+  (`settings.section`, order 16, right after "Plugins") — the entry now
+  appears directly at **Settings → Runcat Plugin Overview**. The old tab
+  was removed.
+
+### Tests
+
+- mock suite gained uninstall guard cases (MISSING_PARAMS /
+  SELF_UNINSTALL_DENIED / NOT_INSTALLED, none spawn a real process).
+  All 6 cases pass.
+
+---
+
 ## [0.3.8] - 2026-08-27
 
 ### Changes

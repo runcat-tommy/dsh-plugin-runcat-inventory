@@ -4,6 +4,30 @@
 
 本文件记录 `dsh-plugin-runcat-inventory`（逃咪-插件总览 / Runcat Plugin Overview）的版本变更。
 
+## [0.4.0] - 2026-08-27
+
+### 新功能
+
+- **卸载**：操作列新增"卸载"按钮 + 二次确认弹窗；host 执行
+  `dsh plugin --profile <当前 profile> remove <包名>`，从 profile 移除
+  依赖与 bundle 层（pnpm remove + reconcile），**重启 Web UI 生效**。
+  守卫：禁止卸载本插件自身（`SELF_UNINSTALL_DENIED`）；非 profile 依赖
+  （内置包等）不可卸载（`NOT_INSTALLED`）。
+
+### 变更
+
+- **入口迁移**：从"设置 → 插件 → 逃咪-插件总览"（`settings.plugins.tab`
+  选项卡）迁移到**设置左侧导航**（`settings.section`，order 16，紧跟
+  "插件"之后）——入口直接显示在 **设置 → 逃咪-插件总览**。原选项卡
+  已移除。
+
+### 测试
+
+- mock 新增卸载守卫用例（MISSING_PARAMS / SELF_UNINSTALL_DENIED /
+  NOT_INSTALLED，均不触发真实进程）。6 用例全部通过。
+
+---
+
 ## [0.3.8] - 2026-08-27
 
 ### 变更
