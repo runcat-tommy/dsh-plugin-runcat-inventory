@@ -4,6 +4,25 @@
 
 本文件记录 `dsh-plugin-runcat-inventory`（逃咪-插件总览 / Runcat Plugin Overview）的版本变更。
 
+## [1.2.1] - 2026-10-16
+
+### 修复
+
+- **补上宿主版本要求（peer 声明）**：本包此前没有 `peerDependencies`，社区市场只能把它判为 `unknown`。市场只认三类声明——`engines.dsh`，以及 `peerDependencies` 里既在**宿主包清单**内、又匹配 `@deepseek-ai/dsh*` 的项（`dshmarket/lib/discovery-compatibility.js` 的 `deriveHostCompatibility`）；一条都没有，插件就无法声明「我支持 0.2.x」。
+  - 现补 1 条，正是 `dsh.client.inject` 已声明的那个包：`@deepseek-ai/dsh-client-runtime`，范围为 **`^0.1.0-rc.6 || ^0.2.0-rc.1`**。
+  - 为什么是两段式：只写 `^0.2.0-rc.1` 会把仍在 0.1.x 宿主上的用户判成 `incompatible`；两段式同时覆盖 `0.1.0-rc.6` / `0.1.0-rc.8` / `0.1.1-rc.2` / `0.2.0-rc.2` / `0.2.1-alpha.4`。**日后两条线若不可兼得，以 0.2.x 为准，放弃 0.1.x。**
+
+### 说明
+
+- 运行时代码零改动：`lib/` 与 1.2.0 逐字节相同（本包版本号只出现在 `package.json` 与文档里）。
+- 实测证据（宿主 `0.2.0-rc.2`，验收工具为仓库外的 `verify-compat.mjs`，判定直接复用 dshmarket 自己的函数）：改前 `unknown` → 改后 `compatible`；`profiles/web` 体检本插件无 peer 警告；插件在 0.2.0-rc.2 上正常加载。
+- 遗留（本次未动）：仓库缺 `screenshots.json`，按市场规则会退化为从 README 抽图，过滤较严，详情页可能没有 UI 预览图。
+
+### 发布
+
+- npm：`dsh-plugin-runcat-inventory@1.2.1`
+- GitHub：https://github.com/runcat-tommy/dsh-plugin-runcat-inventory
+
 ## [1.2.0] - 2026-08-27
 
 ### 新功能：更新提醒

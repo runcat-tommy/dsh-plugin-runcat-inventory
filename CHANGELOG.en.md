@@ -4,6 +4,25 @@
 
 This file records the version history of `dsh-plugin-runcat-inventory` (Runcat Plugin Overview / 逃咪-插件总览).
 
+## [1.2.1] - 2026-10-16
+
+### Fixed
+
+- **The package declared no host requirement at all, so the marketplace could only read it as `unknown`**: there were no `peerDependencies`, and the market's verdict only considers three kinds of declaration — `engines.dsh`, plus any `peerDependencies` entry that is both in the **host package inventory** and matches `@deepseek-ai/dsh*` (`deriveHostCompatibility` in `dshmarket/lib/discovery-compatibility.js`). With none of them, the plugin cannot say "I support 0.2.x".
+  - Added 1 host peer — exactly the package `dsh.client.inject` already lists: `@deepseek-ai/dsh-client-runtime`, ranged **`^0.1.0-rc.6 || ^0.2.0-rc.1`**.
+  - Why two segments instead of `^0.2.0-rc.1` alone: declaring only 0.2.x would mark users still on a 0.1.x host as `incompatible`. The two-segment range covers `0.1.0-rc.6` / `0.1.0-rc.8` / `0.1.1-rc.2` / `0.2.0-rc.2` / `0.2.1-alpha.4`. **If the two lines ever cannot coexist, 0.2.x wins and 0.1.x is dropped.**
+
+### Notes
+
+- No runtime change: `lib/` is byte-identical to 1.2.0 (this package's version number appears only in `package.json` and the docs).
+- Evidence (host `0.2.0-rc.2`, using an out-of-tree `verify-compat.mjs` that calls dshmarket's own functions): `unknown` → `compatible`; the `profiles/web` health check reports no peer warning; the plugin loads normally on 0.2.0-rc.2.
+- Left as-is deliberately: the repo has no `screenshots.json`, so the market falls back to scraping the README, which filters aggressively — the detail page may show no UI preview.
+
+### Release
+
+- npm: `dsh-plugin-runcat-inventory@1.2.1`
+- GitHub: https://github.com/runcat-tommy/dsh-plugin-runcat-inventory
+
 ## [1.2.0] - 2026-08-27
 
 ### New feature: update reminders
