@@ -11,13 +11,34 @@
  */
 
 import assert from 'node:assert/strict'
-import { mkdtempSync, rmSync, mkdirSync, writeFileSync, readFileSync, symlinkSync } from 'node:fs'
+import { mkdtempSync, rmSync, mkdirSync, writeFileSync, readFileSync, symlinkSync, existsSync } from 'node:fs'
 import { tmpdir } from 'node:os'
-import { join } from 'node:path'
-import { pathToFileURL } from 'node:url'
+import { dirname, join } from 'node:path'
+import { fileURLToPath, pathToFileURL } from 'node:url'
 
-const REAL_JS_YAML = 'C:/Users/yeyu1/.dsh/profiles/node_modules/js-yaml'
-const PLUGIN_URL = 'file:///C:/Users/yeyu1/.dsh/profiles/web/node_modules/dsh-plugin-runcat-inventory/lib/index.js'
+// 被导入的模块 = 本仓库源码（与测试同仓），不再硬编码某台机器的安装路径
+const REPO_ROOT = dirname(dirname(fileURLToPath(import.meta.url)))
+const PLUGIN_URL = pathToFileURL(join(REPO_ROOT, 'lib', 'index.js')).href
+
+/** 找一个真实存在的 js-yaml（测试里 junction 给临时 profile 用）。 */
+function findRealJsYaml() {
+  const candidates = []
+  if (process.env.RUNCAT_TEST_JS_YAML) candidates.push(process.env.RUNCAT_TEST_JS_YAML)
+  for (const base of [
+    process.env.DSH_HOME ? join(process.env.DSH_HOME, 'profiles') : null,
+    process.env.USERPROFILE ? join(process.env.USERPROFILE, '.dsh', 'profiles') : null,
+    process.env.APPDATA ? join(process.env.APPDATA, 'npm') : null,
+    join(REPO_ROOT, '..'),
+  ]) {
+    if (base === null) continue
+    candidates.push(join(base, 'node_modules', 'js-yaml'), join(base, 'js-yaml'))
+  }
+  for (const c of candidates) {
+    if (existsSync(join(c, 'package.json'))) return c
+  }
+  return null
+}
+const REAL_JS_YAML = findRealJsYaml()
 
 // 测试保持离线/确定性：关闭 npm 版本扫描（host 读取此环境变量）
 process.env.RUNCAT_SKIP_UPDATE_SCAN = '1'
@@ -136,8 +157,11 @@ writeFileSync(join(nm, '@deepseek-ai', 'dsh-web-search-deepseek', 'package.json'
 mkdirSync(join(nm, '@deepseek-ai', 'dsh-base'), { recursive: true })
 writeFileSync(join(nm, '@deepseek-ai', 'dsh-base', 'package.json'), JSON.stringify({ name: '@deepseek-ai/dsh-base', version: '0.1.0-rc.6', description: 'base' }))
 try {
+  if (REAL_JS_YAML === null) throw new Error('js-yaml not found（设置 RUNCAT_TEST_JS_YAML 指定）')
   symlinkSync(REAL_JS_YAML, join(nm, 'js-yaml'), 'junction')
-} catch { /* 已存在 */ }
+} catch (error) {
+  if (!existsSync(join(nm, 'js-yaml'))) console.error('  warn: js-yaml junction 未建立 — ' + (error?.message ?? error))
+}
 
 function patchFileContent() {
   return readFileSync(join(tempDir, 'cordis.patch.yml'), 'utf8')

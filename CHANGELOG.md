@@ -4,6 +4,61 @@
 
 本文件记录 `dsh-plugin-runcat-inventory`（逃咪-插件总览 / Runcat Plugin Overview）的版本变更。
 
+## [1.2.2] - 2026-10-16
+
+### 修复
+
+- **更新按钮对任何依赖都不可能真正生效**（1.2.0 起就存在）。执行的是
+  `dsh plugin --profile <p> add <name>`，**不带版本**；pnpm 的语义是"已装了
+  任意满足 specifier 的版本就不再动作"——打印 `Already up to date`、exit 0、
+  版本不动，精确版本与范围版本都一样。紧接着的"安装后校验"于是把这次空转
+  判成 `VERSION_MISMATCH`，界面显示"更新失败"，detail 还把原因推给"npm 镜像
+  同步延迟"，方向指错。
+  - 现在先查 `latest`、把版本带进命令：`add <name>@<latest>`（`fetchLatestVersion`
+    从"仅自检"改成"先取目标再装"，成功后仅用于复核）。
+  - **跳过 `link:` / `file:` / `workspace:` 依赖**：带版本的 `add` 会把本地
+    开发链接**静默替换成 registry 安装**，这类依赖现在返回新错误码
+    `NOT_UPDATABLE`，**根本不 spawn 任何命令**。
+  - **区分"没有更新"与"更新失败"**：本地版本已 ≥ npm `latest`（含镜像回退、
+    预发布线）时返回 `ALREADY_LATEST`（`ok: true`、`need_restart: false`），
+    界面显示"已是最新版本"而不是失败；`VERSION_MISMATCH` 收窄为"确实比目标
+    旧"，文案改成"npm 源可能尚未同步，请稍后重试"。
+  - 返回体新增 `from_version` / `to_version`（例如 `2.0.2 → 2.0.4`），
+    "重启生效"提示能显示真实跨版本；`latest` 查不到时会记一条 warn 日志。
+- **1.2.1 的 peer 声明不生效，市场仍判 `unknown`**。市场只统计「既在宿主包
+  清单内、又匹配 `@deepseek-ai/dsh*`」的 peer
+  （`dshmarket/lib/discovery-compatibility.js` 的 `deriveHostCompatibility`），
+  而 1.2.1 声明的唯一一条 `@deepseek-ai/dsh-client-runtime` **恰好是桌面端
+  app.asar 宿主清单里不存在的那一个**（284 个包里有 `dsh-client-locale`、
+  `dsh-client-ui-settings`，没有 `dsh-client-runtime`）→ 一条都不计入。
+  - `package.json` 两处同步补齐为三件套（与 `dsh-skill-mini-manager` 同构）：
+    `dsh.client.inject` 与 `peerDependencies` 都加上
+    `@deepseek-ai/dsh-client-locale`、`@deepseek-ai/dsh-client-ui-settings`，
+    范围同为 `^0.1.0-rc.6 || ^0.2.0-rc.1`。补上后上述两条计入 → `compatible`。
+
+### 测试
+
+- 新增 `test/update-test.mjs`（9 用例，串行、离线、不 spawn 真进程）：
+  ① 断言实际 argv 带 `name@<latest>`（范围与精确 specifier 各一）；② 假命令
+  exit 0 但版本不变 → `VERSION_MISMATCH`，不静默成功；③ `link:`/`file:`/
+  `workspace:` → 不执行任何命令（且不先打 registry）；④ 已扫描到
+  `latest == 已装版本` → `ALREADY_LATEST`；⑤ 非 0 退出 → `UPDATE_FAILED`；
+  ⑥ registry 不可达 → 不谎报版本。
+- 新增 `test/compat-test.mjs`：直接调用市场的 `corePackageNames` +
+  `deriveHostCompatibility`（不用 HOST_FALLBACK 兜底，避免假绿），断言
+  `status === 'compatible'`、`declarations.length >= 1`、`peerDependencies`
+  与 `dsh.client.inject` 双向同步；并从 `app.asar` 头部索引重建桌面端布局的
+  清单复核（该布局下旧声明确实判 `unknown`，新声明判 `compatible`）。
+- `test/mock-test.mjs` 不再硬编码某台机器的安装路径（改为定位本仓库源码 +
+  自动查找 js-yaml），`npm test` 串联三个测试文件。
+- 实测：mock 7 + update 9 + compat 6 = **22 用例全部通过**；宿主
+  `0.2.0-rc.2`。
+
+### 发布
+
+- npm：`dsh-plugin-runcat-inventory@1.2.2`
+- GitHub：https://github.com/runcat-tommy/dsh-plugin-runcat-inventory
+
 ## [1.2.1] - 2026-10-16
 
 ### 修复

@@ -4,6 +4,30 @@
 
 This file records the version history of `dsh-plugin-runcat-inventory` (Runcat Plugin Overview / 逃咪-插件总览).
 
+## [1.2.2] - 2026-10-16
+
+### Fixed
+
+- **The update button could never actually update anything** (present since 1.2.0). It ran `dsh plugin --profile <p> add <name>` **without a version**; pnpm's semantics are "if any version satisfying the specifier is already installed, do nothing" — it prints `Already up to date`, exits 0, and leaves the version untouched, for exact and range specifiers alike. The post-install check then read that no-op as `VERSION_MISMATCH`, the UI reported "update failed", and the detail blamed "npm mirror sync delay", pointing at the wrong cause.
+  - `latest` is now resolved first and pinned into the command: `add <name>@<latest>` (the lookup moved from "verification only" to "target first, then verify").
+  - **`link:` / `file:` / `workspace:` dependencies are skipped**: a pinned `add` would silently replace a local development link with a registry install. They now return the new error code `NOT_UPDATABLE` and **no command is spawned at all**.
+  - **"Nothing to update" is no longer reported as a failure**: when the local version already is ≥ npm `latest` (mirror fallback, prerelease lines), the response is `ALREADY_LATEST` (`ok: true`, `need_restart: false`) and the UI says "already up to date". `VERSION_MISMATCH` is narrowed to "genuinely older than the target" and now reads "the npm source may not have synced yet; try again later".
+  - New `from_version` / `to_version` fields (e.g. `2.0.2 → 2.0.4`) so "restart to apply" can show the real jump; an unresolvable `latest` now logs a warning.
+- **The 1.2.1 peer declaration did not take effect — the market still read `unknown`.** The market only counts `peerDependencies` entries that are both in the **host package inventory** and match `@deepseek-ai/dsh*` (`deriveHostCompatibility` in `dshmarket/lib/discovery-compatibility.js`), and 1.2.1's only entry, `@deepseek-ai/dsh-client-runtime`, **is precisely the one missing from the Desktop `app.asar` inventory** (284 packages include `dsh-client-locale` and `dsh-client-ui-settings`, not `dsh-client-runtime`) — so nothing was counted.
+  - `package.json` now carries the full trio in both places (same shape as `dsh-skill-mini-manager`): `dsh.client.inject` and `peerDependencies` both add `@deepseek-ai/dsh-client-locale` and `@deepseek-ai/dsh-client-ui-settings`, ranged `^0.1.0-rc.6 || ^0.2.0-rc.1`. Those two are counted → `compatible`.
+
+### Tests
+
+- New `test/update-test.mjs` (9 cases, serial, offline, no real process spawned): ① the argv actually carries `name@<latest>` (range and exact specifiers); ② a stub that exits 0 without changing the version yields `VERSION_MISMATCH` rather than a silent success; ③ `link:`/`file:`/`workspace:` spawn nothing (and never hit the registry); ④ `latest == installed` after a scan yields `ALREADY_LATEST`; ⑤ a non-zero exit yields `UPDATE_FAILED`; ⑥ an unreachable registry never fabricates a version.
+- New `test/compat-test.mjs`: calls the market's own `corePackageNames` + `deriveHostCompatibility` (no `HOST_FALLBACK` seed, to avoid false green) and asserts `status === 'compatible'`, `declarations.length >= 1`, and that `peerDependencies` and `dsh.client.inject` stay in sync; it also rebuilds the Desktop layout from the `app.asar` header index and re-checks (the old declaration is `unknown` there, the new one `compatible`).
+- `test/mock-test.mjs` no longer hard-codes one machine's install paths (it now locates this repo's source and finds js-yaml itself), and `npm test` chains all three files.
+- Measured: mock 7 + update 9 + compat 6 = **22 cases, all passing** on host `0.2.0-rc.2`.
+
+### Release
+
+- npm: `dsh-plugin-runcat-inventory@1.2.2`
+- GitHub: https://github.com/runcat-tommy/dsh-plugin-runcat-inventory
+
 ## [1.2.1] - 2026-10-16
 
 ### Fixed

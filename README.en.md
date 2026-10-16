@@ -2,7 +2,7 @@
 
 [中文](README.md) | **English**
 
-> Version: **v1.2.0** · Changelog: [CHANGELOG.en.md](CHANGELOG.en.md) ([中文](CHANGELOG.md))
+> Version: **v1.2.2** · Changelog: [CHANGELOG.en.md](CHANGELOG.en.md) ([中文](CHANGELOG.md))
 
 A better DSH plugin list: **table view, status filters, enable/disable switches (hot-applied), uninstall, update reminders, config viewer and copy, automatic zh/en UI switching**.
 Entry point: **Settings → Runcat Plugin Overview** (in the Settings left navigation; shown as 逃咪-插件总览 in Chinese).
@@ -24,7 +24,8 @@ Entry point: **Settings → Runcat Plugin Overview** (in the Settings left navig
 | Details expansion | The "Details" button appears when a plugin has a description or a config; the expanded row shows the full description + config JSON, with one-click copy |
 | Enable / Disable | Edits the profile's `cordis.patch.yml` (user override layer), **hot-applied via HMR — no restart needed** |
 | Uninstall | "Uninstall" button in the Actions column with a confirm dialog; removes the dependency and bundle layer from the profile, **effective after restarting the Web UI**; cannot uninstall itself or built-in packages; uninstalled rows are marked "**Uninstalled**" in the list (dimmed, actions disabled) to avoid repeat operations |
-| Update reminders | Checks the npm registry for the latest version (**batched scan**: 4 per batch, 200ms gap, 1h cache); when the plugin itself has a new version, a prominent card appears at the **top of the panel** (Update now / Not now); other plugins show `vX → vY` highlighting in the version column + an inline "Update" button + a top banner; updated plugins are marked "**Restart to apply**"; updating the plugin itself is supported |
+| Update reminders | Checks the npm registry for the latest version (**batched scan**: 4 per batch, 200ms gap, 1h cache); when the plugin itself has a new version, a prominent card appears at the **top of the panel** (Update now / Not now); other plugins show `vX → vY` highlighting in the version column + an inline "Update" button + a top banner; the update **pins the target version into the command** (`add <name>@<latest>`) and re-checks the installed version afterwards; updated plugins are marked "**Restart to apply**"; updating the plugin itself is supported |
+| Update boundaries | Local link dependencies (`link:` / `file:` / `workspace:`) are **not updatable** (clicking Update refuses explicitly: installing the npm release would drop the development link); a local version already ≥ npm latest reports "already up to date" instead of failing; `VERSION_MISMATCH` now means only "genuinely older than the target" (npm source not synced yet — retry later) |
 | Search & filter | Keyword (combined search over name / id / description / source / version) + status filter |
 | Sorting | Config order (default) / Name ↑ / Name ↓ |
 | Width | No sticky columns; ←/→ arrow keys scroll horizontally; the Source column hides on narrow screens |
@@ -120,6 +121,8 @@ dsh plugin --profile web remove dsh-plugin-runcat-inventory
 
 Full history in [CHANGELOG.en.md](CHANGELOG.en.md) ([中文](CHANGELOG.md)).
 
+- **v1.2.2** (2026-10-16): fixed two measured defects — ① the update command now pins the target version (`add <name>@<latest>`), so "pnpm no-op exits 0 → the self-check calls it a failure" is gone; local link dependencies (link/file/workspace) are explicitly refused; "already up to date" and "update failed" are separate messages, and the response carries `from_version → to_version`. ② host peer declarations completed (locale + runtime + ui-settings), so the market reads `compatible` instead of `unknown`.
+- **v1.2.1** (2026-10-16): declared the host peer range — but the declared `@deepseek-ai/dsh-client-runtime` is not in the Desktop host inventory, so the market still read `unknown` (fixed in v1.2.2).
 - **v1.2.0** (2026-08-27): added **update reminders** — the plugin's own update is shown in a prominent card at the top of the panel (Update now / Not now); other plugins show `vX → vY` highlighting in the version column + an inline "Update" button + a top banner; batched scanning (4/batch, 200ms gap, 1h cache); updated plugins are marked "Restart to apply"; updating the plugin itself is supported.
 - **v1.1.0** (2026-08-27): **milestone** — the version line moved to 1.x and the release was published to npm (https://www.npmjs.com/package/dsh-plugin-runcat-inventory), aggregating everything since 0.4.x (uninstall + "Uninstalled" markers, left-navigation entry, zh/en UI, npm install).
 - **v0.4.0** (2026-08-27): added **uninstall** (button in the Actions column + confirm dialog + cannot uninstall itself or built-ins); the entry point moved from the "Settings → Plugins" tab to the **Settings left navigation** (Settings → Runcat Plugin Overview).
