@@ -4,6 +4,108 @@
 
 This file records the version history of `dsh-plugin-runcat-inventory` (Runcat Plugin Overview / 逃咪-插件总览).
 
+## [1.3.2] - 2026-10-19
+
+### UX (from user testing)
+
+- **The enable/disable result now appears under that plugin's own row.** It used to render at the very bottom of the panel, invisible in a long list. "⏳ Enabling… / ✅ Enabled: X / ❌ Toggle failed" is now a **full-width line directly beneath the plugin row** (long text has room), and failures keep the expandable **Reason**.
+- **Wording changed** to `Enabled: <name> (applying live — click Refresh at the top right to confirm)` (zh: `已启用 <name>（热生效中，请点击右上角刷新按钮）`).
+- The message is readable: it stays for at least 5 seconds and is retired automatically once the state actually flips; if it does not flip, it stays put so success is never implied falsely. Clicking Refresh also clears already-applied notices.
+
+### Fixed: the host requirement now covers the 0.2.1 line
+
+- The peer range used to be `^0.1.0-rc.6 || ^0.2.0-rc.1`. Under semver's prerelease rules `^0.2.0-rc.1` does **not** include `0.2.1-rc.2` (prereleases are compared per `major.minor.patch` tuple), so once the host moved to **0.2.1-rc.2** a strict check would call this package incompatible — the market only passed because it uses `includePrerelease`. All three peers now read
+  **`^0.1.0-rc.6 || ^0.1.1-rc.1 || ^0.2.0-rc.1 || ^0.2.1-alpha.1`**, verified against both strict and prerelease-inclusive semantics for
+  `0.1.0-rc.6 / 0.1.0-rc.8 / 0.1.1-rc.2 / 0.2.0-rc.2 / 0.2.1-alpha.4 / 0.2.1-rc.2`.
+
+### Docs
+
+- Historical entries re-dated from `git log`: `1.2.0`/`1.1.0`/`0.4.1`/`0.4.0`/`0.3.8` → `2026-09-01`, `0.3.5`–`0.3.7` → `2026-08-28` (they had all been copy-pasted as `2026-08-27`).
+
+### Tests
+
+- Full suite **35 cases passing**; the client smoke check passes with **131** locale keys on each side.
+
+### Release
+
+- npm: `dsh-plugin-runcat-inventory@1.3.2`
+- GitHub: https://github.com/runcat-tommy/dsh-plugin-runcat-inventory
+
+## [1.3.1] - 2026-10-19
+
+### Fixed: clicking Enable/Disable did nothing
+
+- **Symptom** (user report): clicking "Enable" or "Disable" left the row's "Enabled/Disabled" badge unchanged.
+- **Cause**: the route actually answered `{"ok":false,"code":"YAML_UNAVAILABLE","detail":"js-yaml 不可用（无法解析）"}` — **js-yaml could not be resolved inside the host process**, so not a single byte of the patch file was written and the UI had nothing to show. The old code treated a missing/unparseable YAML library as a failed operation, and the UI only surfaced a generic message.
+- **Fix**: enable/disable is now **plain text editing** — no YAML parse, no re-serialisation:
+  - disable = append one marked top-level item (`- id: … / name: … / disabled: true`) to `cordis.patch.yml` (replacing a lone `[]` line when present);
+  - enable = remove exactly that marked block (older unmarked blocks are recognised too), restoring `[]` when no items remain;
+  - everything else — the user's comments, `!!js` tags, layout and trailing newline — is preserved byte for byte; the operation is idempotent.
+  - this also removes the old collateral damage where js-yaml 4.x re-serialised the whole file and dropped comments.
+- The js-yaml dependency (and the whole `getYaml` / `!!js` placeholder round-trip) is gone, which also removes the "a failed parse is cached forever" trap.
+
+### Verification
+
+- New cases: **a profile with no js-yaml still writes the disable patch** (exactly this failure), disable/enable idempotency, trailing newline preserved; full suite **35 cases passing**.
+- Measured on Desktop 0.2.1-rc.2: disabling `dsh-view-manager` returned `{"ok":true}` and the row switched to "Disabled"; re-enabling restored "Enabled / mounted"; `cordis.patch.yml` was restored byte for byte.
+
+## [1.3.0] - 2026-10-19
+
+### UX (from user testing)
+
+- **The confirm dialog no longer blocks the UI**: after "Confirm update / Confirm uninstall" the dialog **closes immediately** and progress moves **into the row**; the dialog can always be dismissed (backdrop or Cancel), so a running operation can never trap the whole DSH interface.
+- **Results and next step are shown in the list**:
+  - applied right away → `✅ Updated to vX — applied`
+  - updated but a restart is needed → `✅ Updated to vX — restart DSH to use it`
+  - already current → `✅ Already up to date (vX)`
+  - failure → `❌ Update failed` plus a **Reason** button that opens the error code, detail, the command that ran, its exit code and the stderr tail (up to 1200 chars)
+  - uninstall follows the same pattern.
+- **Enable/disable keeps its current behaviour** (button label switches to "Enabling…/Disabling…" plus one toast line).
+
+### Features
+
+- **Two buttons in the top banner**:
+  - **"Update all (N)"** — sequentially updates every plugin with a pending update, per-row progress and per-row results, then tries to hot-apply and summarises (`N/M updated · applied, no restart needed` / `… restart DSH to apply`, plus `X failed — open “Reason” on the row`).
+  - **"Restart DSH"** — confirmed restart of the host. On a **CLI host** (`dsh web`) a detached helper waits for the port to be released, relaunches the same CLI, and the page polls until the server is back and reloads. On **Desktop** the Electron shell owns the host process and a plugin killing it would throw the UI into a failure page, so the route answers `DESKTOP_RESTART_UNSUPPORTED` with instructions instead of pretending to work.
+- **Hot apply (HMR)**: after update/uninstall the plugin calls DSH's own `hmr.reconcileProfile(ids)` (the same service the official plugin manager uses) to apply profile changes in place — **no restart when it can be applied**. Responses carry `applied` / `need_restart` / `apply_reason`, and the UI says "applied" or "restart to use it" accordingly. New `POST /runcat-api/apply-changes` triggers it manually.
+
+### Notes
+
+- The Desktop limitation is measured, not assumed (read from `app.asar/lib/main.js`): the shell accepts only `ready` / `shutdown-complete` / `platform-session` events from the host, has no "please restart" channel, and treats host exit as a failure — so a plugin cannot safely restart the Desktop host.
+
+### Tests
+
+- update 9 → 13 cases: HMR apply succeeds, HMR reports a restart is still required, `apply-changes` returns `HMR_UNAVAILABLE` without the service, Desktop `/restart` returns `DESKTOP_RESTART_UNSUPPORTED` **without exiting**.
+- Full suite: mock 7 + update 13 + patch 8 + compat 6 = **34 cases passing**; the client smoke check passes with **130** locale keys on each side.
+
+## [1.2.3] - 2026-10-19
+
+### Fixed (measured on DSH Desktop 0.2.1-rc.2 — **not** a version incompatibility)
+
+- **Update / uninstall always failed because `dsh` is not on the host process's PATH at all.** The old code called `spawn('dsh', …)`, but Desktop only installs the CLI at `<resources>\runtime\cli\bin\dsh.cmd` — not on the system PATH, not in `%APPDATA%\npm` (measured: `where dsh` returns nothing). Every click therefore got `'dsh' is not recognized as an internal or external command`, reported generically as "update failed / uninstall failed".
+  - New `resolveDshCli()` resolves in this order: **`RUNCAT_DSH_CLI` override → host executable + `dsh-desktop-host/lib/cli.js` inside the asar (`shell:false`, no PATH dependency) → `dsh.cmd`/`dsh` on PATH → platform install locations**, then caches it and logs the chosen entry at startup.
+  - When nothing is found it returns the new error code **`DSH_CLI_NOT_FOUND`** with actionable guidance (set `RUNCAT_DSH_CLI`) instead of masquerading as a generic failure.
+- **Enable/disable could corrupt the patch layer**: if `cordis.patch.yml` contains a single `!!js` (which DSH's patch layer explicitly allows), `yaml.load()` throws `unknown tag !<tag:yaml.org,2002:js>` → `PATCH_PARSE_FAILED`, so **enable/disable failed entirely**.
+  - A `!!js` custom type is now registered (loaded as a string) with **placeholder round-trip**: on write the original code is restored byte-for-byte as `!!js "<code>"`. Verified: 3 `!!js` occurrences survive the round-trip unchanged.
+- **Comments were silently deleted on write**: js-yaml 4.x does not keep comments and the old code only preserved the file header — measured, only 3 of 47 comment lines survived. All comment lines are now collected in original order at the top with an explanatory line, so **nothing is lost**.
+
+### UX
+
+- **"Enable" → "Enabling…", "Disable" → "Disabling…"**: the label flips immediately on click and the button is disabled; the panel also shows `Enabling… <plugin>`, so there is no doubt the click registered.
+- **"Update" → "Updating…", "Uninstall" → "Uninstalling…"**: after confirming, the dialog/row buttons switch to the in-progress label immediately, and **all other action buttons are disabled** while the operation runs (no double clicks).
+- **The uninstall button now only appears where it can work**: built-in loads / non-profile dependencies (`sourceKind=other`) no longer offer "Uninstall" — those could only ever return `NOT_INSTALLED`.
+- New dictionary entries (105 keys each in zh/en): `enabling` / `disabling` / `uninstalling` / `errCliNotFound`.
+
+### Tests
+
+- New `test/patch-test.mjs` (8 cases): `!!js` loads and is written back **byte-for-byte**, user comments preserved, output still parseable, re-enable equally faithful, Desktop CLI resolution (`<exe>` + asar `cli.js`, `shell:false`), `RUNCAT_DSH_CLI` pointing at a `.cmd` goes through the shell, and a missing CLI yields `DSH_CLI_NOT_FOUND`.
+- Full suite: mock 7 + update 9 + patch 8 + compat 6 = **30 cases passing**.
+
+### Known issues that are NOT this plugin
+
+- Desktop DSH **0.2.1-rc.2** reports `@michengai/dsh-archive-manager@1.0.19` as incompatible ("profile startup denies it") — that plugin's peer range does not cover 0.2.1; every `dsh plugin` run prints that warning.
+- If the profile's supply-chain age policy rejects an **already-locked** package, `dsh plugin add/remove` fails wholesale (`ERR_PNPM_MINIMUM_RELEASE_AGE_VIOLATION`); the update is then blocked inside pnpm and the original error text is shown in the UI.
+
 ## [1.2.2] - 2026-10-16
 
 ### Fixed
@@ -47,7 +149,7 @@ This file records the version history of `dsh-plugin-runcat-inventory` (Runcat P
 - npm: `dsh-plugin-runcat-inventory@1.2.1`
 - GitHub: https://github.com/runcat-tommy/dsh-plugin-runcat-inventory
 
-## [1.2.0] - 2026-08-27
+## [1.2.0] - 2026-09-01
 
 ### New feature: update reminders
 
@@ -82,7 +184,7 @@ This file records the version history of `dsh-plugin-runcat-inventory` (Runcat P
 
 ---
 
-## [1.1.0] - 2026-08-27
+## [1.1.0] - 2026-09-01
 
 ### Milestone
 
@@ -95,7 +197,7 @@ This file records the version history of `dsh-plugin-runcat-inventory` (Runcat P
 
 ---
 
-## [0.4.1] - 2026-08-27
+## [0.4.1] - 2026-09-01
 
 ### Improvements
 
@@ -109,7 +211,7 @@ This file records the version history of `dsh-plugin-runcat-inventory` (Runcat P
 
 ---
 
-## [0.4.0] - 2026-08-27
+## [0.4.0] - 2026-09-01
 
 ### Features
 
@@ -137,7 +239,7 @@ This file records the version history of `dsh-plugin-runcat-inventory` (Runcat P
 
 ---
 
-## [0.3.8] - 2026-08-27
+## [0.3.8] - 2026-09-01
 
 ### Changes
 
@@ -152,7 +254,7 @@ This file records the version history of `dsh-plugin-runcat-inventory` (Runcat P
 
 ---
 
-## [0.3.7] - 2026-08-27
+## [0.3.7] - 2026-08-28
 
 ### Release
 
@@ -177,7 +279,7 @@ This file records the version history of `dsh-plugin-runcat-inventory` (Runcat P
 
 ---
 
-## [0.3.6] - 2026-08-27
+## [0.3.6] - 2026-08-28
 
 ### Docs
 
@@ -188,7 +290,7 @@ This file records the version history of `dsh-plugin-runcat-inventory` (Runcat P
 
 ---
 
-## [0.3.5] - 2026-08-27
+## [0.3.5] - 2026-08-28
 
 ### Docs
 

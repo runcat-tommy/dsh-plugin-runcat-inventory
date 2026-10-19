@@ -76,6 +76,12 @@ function versionOf(name) {
 
 // ── 宿主 ctx / 请求 ────────────────────────────────────────────────────
 const registrations = []
+/** 假 cordis 服务表（ctx.get(name)）——用例里注入 hmr。 */
+const services = {}
+function setServices(next) {
+  for (const key of Object.keys(services)) delete services[key]
+  Object.assign(services, next)
+}
 function fakeCtx() {
   const entries = [
     {
@@ -97,6 +103,8 @@ function fakeCtx() {
     webServer: { register(opts) { registrations.push(opts) } },
     effect(fn) { const d = fn(); return d ?? (() => {}) },
     logger() { return { info() {}, warn() {}, error() {} } },
+    // cordis 的服务注册表：测试通过 setServices() 注入假的 hmr
+    get(name) { return services[name] },
   }
 }
 function makeReq({ method = 'GET', url = '/', headers = {} } = {}) {
@@ -166,6 +174,15 @@ async function callUpdate(name, reg) {
   const server = reg ?? await freshServer()
   const req = makeReq({ method: 'POST', url: '/runcat-api/update' })
   req._feed({ name })
+  const res = await callHandler(server, req)
+  return { status: res.status, body: JSON.parse(res.body) }
+}
+
+/** 调任意 POST 路由（restart / apply-changes）。 */
+async function callPost(path, payload, reg) {
+  const server = reg ?? await freshServer()
+  const req = makeReq({ method: 'POST', url: path })
+  req._feed(payload ?? {})
   const res = await callHandler(server, req)
   return { status: res.status, body: JSON.parse(res.body) }
 }
@@ -289,6 +306,76 @@ test('update: npm 不可达 → 不谎报成功（回退不带 @，仍走安装�
     assert.equal(body.ok, true, '拿不到目标版本时无法判定，按命令结果放行但不谎报版本')
     assert.equal(body.need_restart, true)
   } finally { stub.restore(); npm.restore() }
+})
+
+// ⑦ HMR 可用时：热应用成功 → applied=true / need_restart=false（不用重启）
+test('update: HMR 可用 → 热应用成功，不再要求重启', async () => {
+  const npm = installFetchStub({ 'dsh-fake-pinned': '2.0.4' })
+  const stub = installRunCommandStub(() => {
+    install('dsh-fake-pinned', '2.0.4')
+    return { code: 0, stdout: '', stderr: '' }
+  })
+  let reconciledIds = null
+  setServices({
+    hmr: {
+      async reconcileProfile(ids) { reconciledIds = ids; return {} },
+    },
+  })
+  try {
+    const { body } = await callUpdate('dsh-fake-pinned')
+    assert.equal(body.ok, true, JSON.stringify(body))
+    assert.equal(body.applied, true)
+    assert.equal(body.need_restart, false, '热应用成功就不该再要求重启')
+    assert.deepEqual(reconciledIds, ['dsh-fake-pinned'], 'reconcile 应带上该包的条目 id')
+  } finally {
+    stub.restore(); npm.restore(); setServices({})
+    install('dsh-fake-pinned', '2.0.2')
+  }
+})
+
+// ⑧ HMR 表示仍需重启 → applied=false + 原因
+test('update: HMR 表示仍需重启 → need_restart=true 且带原因', async () => {
+  const npm = installFetchStub({ 'dsh-fake-mismatch': '3.1.0' })
+  const stub = installRunCommandStub(() => {
+    install('dsh-fake-mismatch', '3.1.0')
+    return { code: 0, stdout: '', stderr: '' }
+  })
+  setServices({ hmr: { async reconcileProfile() { return { restartReason: 'host-code' } } } })
+  try {
+    const { body } = await callUpdate('dsh-fake-mismatch')
+    assert.equal(body.ok, true, JSON.stringify(body))
+    assert.equal(body.applied, false)
+    assert.equal(body.need_restart, true)
+    assert.equal(body.apply_reason, 'host-code')
+  } finally {
+    stub.restore(); npm.restore(); setServices({})
+    install('dsh-fake-mismatch', '1.0.0')
+  }
+})
+
+// ⑨ /apply-changes：没有 hmr 服务 → HMR_UNAVAILABLE（不假装成功）
+test('apply-changes: 无 HMR 服务 → HMR_UNAVAILABLE', async () => {
+  setServices({})
+  const { body } = await callPost('/runcat-api/apply-changes')
+  assert.equal(body.ok, false)
+  assert.equal(body.code, 'HMR_UNAVAILABLE')
+  assert.equal(body.need_restart, true)
+})
+
+// ⑩ /restart：桌面端（electron）→ 明确不支持，且**不能**杀进程
+test('restart: 桌面端 → DESKTOP_RESTART_UNSUPPORTED（不当场退出）', async () => {
+  const hadElectron = Object.prototype.hasOwnProperty.call(process.versions, 'electron')
+  const saved = process.versions.electron
+  Object.defineProperty(process.versions, 'electron', { value: '38.0.0', configurable: true })
+  try {
+    const { body } = await callPost('/runcat-api/restart')
+    assert.equal(body.ok, false, JSON.stringify(body))
+    assert.equal(body.code, 'DESKTOP_RESTART_UNSUPPORTED')
+    assert.match(String(body.detail), /重新打开/)
+  } finally {
+    if (hadElectron) Object.defineProperty(process.versions, 'electron', { value: saved, configurable: true })
+    else delete process.versions.electron
+  }
 })
 
 // ── 汇总 ───────────────────────────────────────────────────────────────
